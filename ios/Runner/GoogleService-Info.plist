@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>640531224553-lo10a8dv324korpj6r61tkevha67jeic.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.640531224553-lo10a8dv324korpj6r61tkevha67jeic</string>
+	<key>API_KEY</key>
+	<string>AIzaSyCyM9YI7wx-lcEMMctHf83VUesOdfERdsA</string>
+	<key>GCM_SENDER_ID</key>
+	<string>640531224553</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.taconline.giftshop</string>
+	<key>PROJECT_ID</key>
+	<string>taconlinegiftshop</string>
+	<key>STORAGE_BUCKET</key>
+	<string>taconlinegiftshop.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:640531224553:ios:6b1bf4ff4bc20b08</string>
+	<key>DATABASE_URL</key>
+	<string>https://taconlinegiftshop.firebaseio.com</string>
+</dict>
+</plist>

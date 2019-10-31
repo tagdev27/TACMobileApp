@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="freshchat_file_provider_authority">com.taconline.giftshop.provider</string>
+    <string name="google_place_maps_key" templateMergeStrategy="preserve" translatable="false">
+        AIzaSyAmFZLdS22gysMlbSgw7kmYzAFfbU1uvVM
+    </string>
+</resources>

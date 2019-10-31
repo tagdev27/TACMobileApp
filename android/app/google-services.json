@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "640531224553",
+    "firebase_url": "https://taconlinegiftshop.firebaseio.com",
+    "project_id": "taconlinegiftshop",
+    "storage_bucket": "taconlinegiftshop.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:640531224553:android:6b1bf4ff4bc20b08",
+        "android_client_info": {
+          "package_name": "com.taconline.giftshop"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "640531224553-f2a9jad8al1as2kh1h53uijt2ij47peg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAmFZLdS22gysMlbSgw7kmYzAFfbU1uvVM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "640531224553-f2a9jad8al1as2kh1h53uijt2ij47peg.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "640531224553-vh3tuonbq6fogoh1lr9i337gbuiv0amt.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.tac.giftshop"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
