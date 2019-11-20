@@ -96,7 +96,6 @@ class _ChoseLoginState extends State<ChoseLogin> with TickerProviderStateMixin {
         images: [
           AssetImage('assets/img/girl.png'),
           AssetImage("assets/img/SliderLogin2.png"),
-          AssetImage('assets/img/SliderLogin3.png'),
           AssetImage("assets/img/SliderLogin4.png"),
         ],
       ),
@@ -169,7 +168,7 @@ class _ChoseLoginState extends State<ChoseLogin> with TickerProviderStateMixin {
 
                               /// to set Text "get best product...." (Click to open code)
                               Text(
-                                "Get best product in TAC shop",
+                                "Get the best gift baskets in TAC shop",
                                 style: TextStyle(
                                     color: Colors.white,
                                     fontSize: 17.0,
@@ -204,7 +203,7 @@ class _ChoseLoginState extends State<ChoseLogin> with TickerProviderStateMixin {
                                 : AnimationSplashSignup(
                                     animationController: animationController.view,
                                   ),
-                            Padding(padding: EdgeInsets.only(top: 15.0)),
+                            Padding(padding: EdgeInsets.only(top: 25.0)),
                             Center(
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
@@ -225,7 +224,7 @@ class _ChoseLoginState extends State<ChoseLogin> with TickerProviderStateMixin {
                                         skipPressed();
                                       },
                                       child: Text(
-                                        "OR SKIP",
+                                        "OR CLICK HERE TO SKIP",
                                         style: TextStyle(
                                             color: Colors.white,
                                             fontWeight: FontWeight.w100,
@@ -244,7 +243,7 @@ class _ChoseLoginState extends State<ChoseLogin> with TickerProviderStateMixin {
                                 ],
                               ),
                             ),
-                            Padding(padding: EdgeInsets.only(top: 70.0)),
+                            Padding(padding: EdgeInsets.only(top: 80.0)),
                           ],
                         ),
 

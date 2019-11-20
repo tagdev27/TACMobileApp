@@ -11,6 +11,7 @@ import 'package:treva_shop_flutter/UI/HomeUIComponent/DetailProduct.dart';
 import 'package:treva_shop_flutter/UI/HomeUIComponent/PromotionDetail.dart';
 import 'package:treva_shop_flutter/UI/HomeUIComponent/Search.dart';
 import 'package:treva_shop_flutter/Utils/backgroud_utils.dart';
+import 'package:treva_shop_flutter/Utils/colors.dart';
 import 'package:treva_shop_flutter/Utils/general.dart';
 
 class categoryDetail extends StatefulWidget {
@@ -55,7 +56,7 @@ class _categoryDetailState extends State<categoryDetail> {
   /// Custom text blue in variable
   static var _customTextStyleBlue = TextStyle(
       fontFamily: "Gotik",
-      color: Color(0xFF6991C7),
+      color: Color(MyColors.primary_color),
       fontWeight: FontWeight.w700,
       fontSize: 15.0);
 
@@ -64,13 +65,13 @@ class _categoryDetailState extends State<categoryDetail> {
   ///
   @override
   void initState() {
-    imageNetwork.resolve(ImageConfiguration()).addListener((_,__){
+    imageNetwork.resolve(new ImageConfiguration()).addListener(new ImageStreamListener((ImageInfo image, bool synchronousCall) { /*...*/
       if(mounted){
         setState(() {
-          loadImage=false;
+          loadImage = false;
         });
       }
-    });
+    }));
     // TODO: implement initState
     super.initState();
     startOperations();
@@ -374,7 +375,7 @@ class _categoryDetailState extends State<categoryDetail> {
               Navigator.of(context).push(PageRouteBuilder(
                   pageBuilder: (_, __, ___) => new searchAppbar(widget.products)));
             },
-            icon: Icon(Icons.search, color: Color(0xFF6991C7)),
+            icon: Icon(Icons.search, color: Color(MyColors.primary_color)),
           ),
         ],
         centerTitle: true,
@@ -387,7 +388,7 @@ class _categoryDetailState extends State<categoryDetail> {
               fontFamily: "Gotik"),
         ),
         iconTheme: IconThemeData(
-          color: Color(0xFF6991C7),
+          color: Color(MyColors.primary_color),
         ),
         elevation: 0.0,
       ),

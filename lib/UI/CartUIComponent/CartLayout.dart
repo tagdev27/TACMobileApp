@@ -5,6 +5,7 @@ import 'package:treva_shop_flutter/ListItem/CartItemData.dart';
 import 'package:treva_shop_flutter/ListItem/GiftBaskets.dart';
 import 'package:treva_shop_flutter/UI/CartUIComponent/Delivery.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:treva_shop_flutter/Utils/colors.dart';
 import 'package:treva_shop_flutter/Utils/general.dart';
 
 class cart extends StatefulWidget {
@@ -58,7 +59,7 @@ class _cartState extends State<cart> {
   Widget build(BuildContext context) {
       return Scaffold(
           appBar: AppBar(
-            iconTheme: IconThemeData(color: Color(0xFF6991C7)),
+            iconTheme: IconThemeData(color: Color(MyColors.primary_color)),
             centerTitle: true,
             backgroundColor: Colors.white,
             title: Text(
@@ -214,7 +215,7 @@ class _cartState extends State<cart> {
                                                 padding: const EdgeInsets.only(
                                                     top: 18.0, left: 0.0),
                                                 child: Container(
-                                                  width: 112.0,
+                                                  width: 115.0,
                                                   decoration: BoxDecoration(
                                                       color: Colors.white70,
                                                       border: Border.all(
@@ -356,7 +357,7 @@ class _cartState extends State<cart> {
                             height: 40.0,
                             width: 120.0,
                             decoration: BoxDecoration(
-                              color: Color(0xFFA3BDED),
+                              color: Color(MyColors.primary_color),
                             ),
                             child: Center(
                               child: Text(

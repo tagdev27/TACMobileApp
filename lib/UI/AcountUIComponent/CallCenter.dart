@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:treva_shop_flutter/UI/BrandUIComponent/Chat.dart';
 import 'package:treva_shop_flutter/UI/HomeUIComponent/ChatItem.dart';
 import 'package:treva_shop_flutter/UI/AcountUIComponent/Message.dart';
+import 'package:treva_shop_flutter/Utils/backgroud_utils.dart';
+import 'package:treva_shop_flutter/Utils/colors.dart';
+import 'package:treva_shop_flutter/Utils/general.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class callCenter extends StatefulWidget {
  @override
@@ -24,6 +28,22 @@ class _callCenterState extends State<callCenter> {
   fontFamily: "Gotik",
  );
 
+ Future<Null> _launchInWebViewOrVC(String url) async {
+  if (await canLaunch(url)) {
+   await launch(url, forceSafariVC: true, forceWebView: true);
+  } else {
+   new GeneralUtils().neverSatisfied(context, 'Error', 'Cannot open parameter.');
+  }
+ }
+
+ Future<void> _launchURL(String url) async {
+  if (await canLaunch(url)) {
+   await launch(url);
+  } else {
+   throw 'Could not launch $url';
+  }
+ }
+
  Widget build(BuildContext context) {
   return Scaffold(
    appBar: AppBar(
@@ -36,7 +56,7 @@ class _callCenterState extends State<callCenter> {
          fontFamily: "Gotik"),
     ),
     centerTitle: true,
-    iconTheme: IconThemeData(color: Color(0xFF6991C7)),
+    iconTheme: IconThemeData(color: Color(MyColors.primary_color)),
     elevation: 0.0,
    ),
    body: Container(
@@ -61,7 +81,7 @@ class _callCenterState extends State<callCenter> {
               padding:
               const EdgeInsets.only(top: 5.0, right: 20.0, left: 20.0),
               child: Text(
-               "If you have complain about \nthe product chat me ",
+               "If you have complains about \nthe product call me ",
                style: _txtCustomSub,
                textAlign: TextAlign.center,
               ),
@@ -70,20 +90,22 @@ class _callCenterState extends State<callCenter> {
               padding: const EdgeInsets.only(top: 40.0),
               child: InkWell(
                onTap: () {
-                Navigator.of(context).push(PageRouteBuilder(
-                    pageBuilder: (_, __, ___) => new chatItem()));
+                const url = 'tel:+234 706 711 7723';
+                _launchURL(url);
+//                Navigator.of(context).push(PageRouteBuilder(
+//                    pageBuilder: (_, __, ___) => new chatItem()));
                },
                child: Center(
                 child: Container(
                  height: 50.0,
                  width: 280.0,
                  decoration: BoxDecoration(
-                     color: Color(0xFF6991C7),
+                     color: Color(MyColors.primary_color),
                      borderRadius:
                      BorderRadius.all(Radius.circular(25.0))),
                  child: Center(
                      child: Text(
-                      "Chat Me",
+                      "Call Me",
                       style: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.w700,

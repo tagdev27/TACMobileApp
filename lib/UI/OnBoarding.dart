@@ -32,17 +32,17 @@ final pages = [
       iconColor: Colors.black,
       bubbleBackgroundColor: Colors.black,
       title: Text(
-        'E-Commerce App',style: _fontHeaderStyle,
+        'TAC - Online Gift Shop App',style: _fontHeaderStyle,
       ),
       body: Container(
         height: 250.0,
         child: Text(
-          'E commerce application template \nbuy this code template in codecanyon',textAlign: TextAlign.center,
+          'TAC is an e-commerce gifting services platform \nthat aims at connecting users',textAlign: TextAlign.center,
           style: _fontDescriptionStyle
         ),
       ),
       mainImage: Image.asset(
-        'assets/imgIllustration/IlustrasiOnBoarding1.png',
+        'assets/imgIllustration/IlustrasiOnBoarding1.jpeg',
         height: 285.0,
         width: 285.0,
         alignment: Alignment.center,
@@ -79,7 +79,7 @@ final pages = [
       body: Container(
         height: 250.0,
         child: Text(
-            'Shop from thousand brands in the world \n in one application at throwaway \nprices ',textAlign: TextAlign.center,
+            'Shop from varieties of gift baskets\n in one application at throwaway \nprices ',textAlign: TextAlign.center,
             style: _fontDescriptionStyle
         ),
       ),

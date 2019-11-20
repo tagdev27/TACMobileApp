@@ -7,6 +7,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:rave_flutter/rave_flutter.dart';
 import 'package:treva_shop_flutter/ListItem/CartItemData.dart';
 import 'package:treva_shop_flutter/ListItem/track.dart';
 import 'package:treva_shop_flutter/UI/BottomNavigationBar.dart';
@@ -36,25 +37,51 @@ class _paymentState extends State<payment> {
   final List<cartItem> items = new List();
   String total_amount = "", final_amount = "";
   String tax = "";
-  String delivery = new GeneralUtils().currencyFormattedMoney(2000);
+  String delivery = "";
   bool _inAsyncCall = false;
   double ft = 0;
 
   bool isCharged = false;
   String ref, card;
   double _tax, _delivery;
+  List<String> deliveryOptions = ["select option"];
+  List<dynamic> deliveryOptionsMap = new List();
+  String delivery_selected = "select option";
+  String delivery_selected_note = "";
 
   StorageSystem ss = new StorageSystem();
 
+  String public_key = "", enc_key = "";
+
+  double finalT = 0;
+
   /// Duration for popup card if user succes to payment
   StartTime() async {
-    return Timer(Duration(seconds: 5), navigator);
+    return Timer(Duration(seconds: 10), navigator);
   }
 
   /// Navigation to route after user succes payment
   void navigator() {
     Navigator.of(context).pushReplacement(PageRouteBuilder(
         pageBuilder: (_, __, ___) => new bottomNavigationBar()));
+  }
+
+  getDeliveryOptions() {
+    Firestore.instance
+        .collection("db")
+        .document("tacadmin")
+        .collection("delivery")
+        .getDocuments()
+        .then((query) {
+      query.documents.forEach((doc) {
+        Map<String, dynamic> data = doc.data;
+        if (!mounted) return;
+        setState(() {
+          deliveryOptions.add(data['name']);
+          deliveryOptionsMap.add(data);
+        });
+      });
+    });
   }
 
   @override
@@ -85,12 +112,31 @@ class _paymentState extends State<payment> {
       });
     });
     getTaxValue();
-    initPaystack();
+//    initPaystack();
   }
 
   Future<void> initPaystack() async {
     await PaystackPlugin.initialize(
         publicKey: "pk_test_8be8b3b21803dcb62514b6e55f3c6f90f4a74483");
+  }
+
+  void initFlutterWave() {
+    http.get(
+        'https://us-central1-taconlinegiftshop.cloudfunctions.net/getFlutterwaveKeys',
+        headers: {'Authorization': 'api ATCNoQUGOoEvTwqWigCR'}).then((result) {
+      dynamic resp = json.decode(result.body);
+      public_key =
+          "${resp['public_key']}"; //for test FLWPUBK_TEST-407af7e7116f735e90d8f87c23b2d205-X
+      enc_key = "${resp['enc_key']}"; //for test FLWSECK_TESTee51a806e09f
+
+      getDeliveryOptions();
+      setState(() {
+        _inAsyncCall = false;
+      });
+    });
+    //RavePayInitializer
+//    await PaystackPlugin.initialize(
+//        publicKey: "pk_test_8be8b3b21803dcb62514b6e55f3c6f90f4a74483");
   }
 
   void getTaxValue() async {
@@ -106,17 +152,18 @@ class _paymentState extends State<payment> {
     int value = get_tax.data['tax_value'];
     new GeneralUtils().totalAmountInCartDouble().then((t) {
       double mTax = ((GeneralUtils().country_priceDouble(t) * value) / 100);
-      double finalT = mTax +
-          GeneralUtils().country_priceDouble(2000.00) +
+      finalT = mTax +
+          //GeneralUtils().country_priceDouble(2000.00) +
           GeneralUtils().country_priceDouble(t);
       setState(() {
         tax = GeneralUtils().currencyFormattedMoneyDouble(mTax);
         _tax = mTax;
-        _delivery = GeneralUtils().country_priceDouble(2000.00);
+        //_delivery = GeneralUtils().country_priceDouble(2000.00);
         final_amount = GeneralUtils().currencyFormattedMoneyDouble(finalT);
-        _inAsyncCall = false;
         ft = GeneralUtils().country_priceDouble(finalT);
       });
+
+      initFlutterWave(); //flutterwave initializer
     });
   }
 
@@ -156,7 +203,7 @@ class _paymentState extends State<payment> {
         ),
         centerTitle: true,
         backgroundColor: Colors.white,
-        iconTheme: IconThemeData(color: Color(0xFF6991C7)),
+        iconTheme: IconThemeData(color: Color(MyColors.primary_color)),
       ),
       body: ModalProgressHUD(
           opacity: 0.5,
@@ -216,7 +263,7 @@ class _paymentState extends State<payment> {
                             letterSpacing: 0.1,
                             fontWeight: FontWeight.bold,
                             fontSize: 18.0,
-                            color: Colors.black,
+                            color: Color(MyColors.primary_color),
                             fontFamily: ""),
                       ),
                     ),
@@ -254,15 +301,90 @@ class _paymentState extends State<payment> {
                             color: Colors.black,
                             fontFamily: ""),
                       ),
-                      trailing: Text(
-                        delivery,
-                        style: TextStyle(
-                            letterSpacing: 0.1,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 18.0,
-                            color: Colors.black,
-                            fontFamily: ""),
+                      trailing: Container(
+                        width: 150.0,
+                        child: DropdownButton(
+                          items: deliveryOptions.map((m) {
+                            return DropdownMenuItem<String>(
+                              value: m,
+                              child: Text(
+                                m,
+                                textAlign: TextAlign.right,
+                              ),
+                            );
+                          }).toList(),
+                          onChanged: (String item) {
+                            if (item == "select option") {
+                              setState(() {
+                                delivery_selected_note = "";
+                                delivery_selected = item;
+                              });
+                              return;
+                            }
+                            setState(() {
+                              delivery_selected = item;
+                            });
+                            deliveryOptionsMap.forEach((del) {
+                              Map<String, dynamic> del_options = del;
+                              String name = del_options['name'];
+                              if (name == item) {
+                                String amt = GeneralUtils()
+                                    .currencyFormattedMoney(
+                                        del_options['value']);
+                                String desc =
+                                    "${del_options['name']} (${del_options['description']}): $amt";
+                                setState(() {
+                                  delivery_selected_note = desc;
+                                  delivery = new GeneralUtils()
+                                      .currencyFormattedMoney(
+                                          del_options['value']);
+                                  _delivery = GeneralUtils()
+                                      .country_priceDouble(double.parse(
+                                          "${del_options['value']}"));
+                                  final_amount = GeneralUtils()
+                                      .currencyFormattedMoneyDouble(finalT +
+                                          _delivery); //GeneralUtils().country_priceDouble(2000.00)
+                                  ft = GeneralUtils()
+                                      .country_priceDouble(finalT + _delivery);
+                                });
+                              }
+                            });
+                          },
+                          value: delivery_selected,
+                          hint: Text(
+                            'select option',
+                            textAlign: TextAlign.right,
+                          ),
+                          underline: Divider(
+                            height: 0.0,
+                            color: Colors.white,
+                          ),
+                          isExpanded: true,
+                          style: TextStyle(
+                              letterSpacing: 0.1,
+                              fontSize: 18.0,
+                              color: Colors.black,
+                              fontFamily: ""),
+                        ),
                       ),
+//                      Text(
+//                        delivery,
+//                        style: TextStyle(
+//                            letterSpacing: 0.1,
+//                            fontWeight: FontWeight.bold,
+//                            fontSize: 18.0,
+//                            color: Colors.black,
+//                            fontFamily: ""),
+//                      ),
+                    ),
+                    Text(
+                      delivery_selected_note,
+                      style: TextStyle(
+                          letterSpacing: 0.1,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18.0,
+                          color: Colors.black,
+                          fontFamily: ""),
                     ),
                     Container(
                       margin: EdgeInsets.only(top: 20.0),
@@ -294,7 +416,7 @@ class _paymentState extends State<payment> {
                     /// Button pay
                     InkWell(
                       onTap: () {
-                        payWithPaystack();
+                        payNow();
                         //addOrderToFirebase("249347845");
                       },
                       child: Container(
@@ -302,7 +424,7 @@ class _paymentState extends State<payment> {
                         margin:
                             EdgeInsets.only(left: 20.0, right: 20.0, top: 40.0),
                         decoration: BoxDecoration(
-                            color: Colors.indigoAccent,
+                            color: Color(MyColors.primary_color),
                             borderRadius:
                                 BorderRadius.all(Radius.circular(40.0))),
                         child: Center(
@@ -366,35 +488,97 @@ class _paymentState extends State<payment> {
     );
   }
 
-  payWithPaystack() async {
-    if (isCharged) {
-      verifyTransaction(ref, card);
+  String setupCurrencyAndCountry() {
+    final res = ss.getItem('currency');
+    Map<String, dynamic> data = jsonDecode(res);
+    String curr = data['currency_name'];
+    String o_currency = (curr == "₦") ? "NGN" : curr;
+    String o_country = "NG";
+    switch (o_currency) {
+      case 'KES':
+        o_country = 'KE';
+        break;
+      case 'GHS':
+        o_country = 'GH';
+        break;
+      case 'ZAR':
+        o_country = 'ZA';
+        break;
+      case 'TZS':
+        o_country = 'TZ';
+        break;
+
+      default:
+        o_country = 'NG';
+        break;
+    }
+    return o_country;
+  }
+
+  payNow() async {
+    if (delivery_selected == "select option") {
+      new GeneralUtils()
+          .neverSatisfied(context, 'Notice', 'Please select delivery option');
       return;
     }
     final res = ss.getItem('currency');
     Map<String, dynamic> data = jsonDecode(res);
     String curr = data['currency_name'];
-    String reference = FirebaseDatabase.instance.reference().push().key;
-    //String accessCode = '${Random().nextInt(9999999)}';
-    Charge charge = Charge()
-      ..amount = (ft * 100).toInt()
-      ..reference = reference
-      ..currency = "NGN"//curr//NGNchange to curr afterwards
-      // or ..accessCode = _getAccessCodeFrmInitialization()
-      ..email = widget.details['email'];
+    String ex_rate = "${data['exchange_rate']}";
+    String reference =
+        '${Random().nextInt(9999)}${Random().nextInt(9999)}'; //FirebaseDatabase.instance.reference().push().key;
+    if (isCharged) {
+      verifyTransaction(ref, card, ex_rate);
+      return;
+    }
+    String country = setupCurrencyAndCountry();
+    //flutterwave charge
+    // Get a reference to RavePayInitializer
+    var initializer = RavePayInitializer(
+        amount: ft, publicKey: public_key, encryptionKey: enc_key)// companyName: Text('TAC GIFTS'), companyLogo: Image.network('https://tacgifts.com/assets/images/icon/logo.png'))
+      ..country = country
+      ..currency = (curr == "₦") ? "NGN" : curr
+      ..email = widget.details['email']
+      ..fName = widget.details['firstname']
+      ..lName = widget.details['lastname']
+      ..txRef = reference
+      ..displayEmail = false
+      ..displayAmount = false
+      ..acceptMpesaPayments = true
+      ..acceptAccountPayments = true
+      ..acceptCardPayments = true
+      ..acceptAchPayments = true
+      ..acceptGHMobileMoneyPayments = true
+      ..acceptUgMobileMoneyPayments = true
+      ..staging = false
+      ..isPreAuth = false
+      ..displayFee = true
+      ..payButtonText = "PAY NOW";
+
     try {
-      CheckoutResponse response = await PaystackPlugin.checkout(context,
-          charge: charge, method: CheckoutMethod.card, fullscreen: true);
-      if (!response.status) {
-        new GeneralUtils()
-            .neverSatisfied(context, 'Payment Error', response.message);
-      } else {
+      // Initialize and get the transaction result
+      RaveResult response = await RavePayManager()
+          .initialize(context: context, initializer: initializer);
+//      print(response);
+//      return;
+      if (response.status == RaveStatus.success) {
         setState(() {
           isCharged = true;
-          ref = response.reference;
-          card = response.card.last4Digits;
+          ref = reference;
+          card = "";
         });
-        verifyTransaction(response.reference, response.card.last4Digits);
+        verifyTransaction(ref, "", ex_rate);//response.card.last4Digits
+        return;
+      }
+      if (response.status == RaveStatus.error) {
+        new GeneralUtils()
+            .neverSatisfied(context, 'Payment Error', response.message);
+        return;
+      }
+      if (response.status == RaveStatus.cancelled) {
+        new GeneralUtils()
+            .neverSatisfied(context, 'Payment Cancelled', response.message);
+        return;
       }
     } catch (e) {
       setState(() {
@@ -402,24 +586,78 @@ class _paymentState extends State<payment> {
       });
       new GeneralUtils().neverSatisfied(context, 'Error', e.toString());
     }
+
+    //String accessCode = '${Random().nextInt(9999999)}';
+//    Charge charge = Charge()
+//      ..amount = (ft * 100).toInt()
+//      ..reference = reference
+//      ..currency = (curr == "₦") ? "NGN" : curr//NGNchange to curr afterwards
+//      // or ..accessCode = _getAccessCodeFrmInitialization()
+//      ..email = widget.details['email'];
+//    try {
+//      CheckoutResponse response = await PaystackPlugin.checkout(context,
+//          charge: charge, method: CheckoutMethod.card, fullscreen: true);
+//      if (!response.status) {
+//        new GeneralUtils()
+//            .neverSatisfied(context, 'Payment Error', response.message);
+//      } else {
+//        setState(() {
+//          isCharged = true;
+//          ref = response.reference;
+//          card = response.card.last4Digits;
+//        });
+//        verifyTransaction(response.reference, response.card.last4Digits, ex_rate);
+//      }
+//    } catch (e) {
+//      setState(() {
+//        _inAsyncCall = false;
+//      });
+//      new GeneralUtils().neverSatisfied(context, 'Error', e.toString());
+//    }
   }
 
-  void verifyTransaction(String reference, String cardNumber) {
+  void verifyTransaction(
+      String reference, String cardNumber, String exchangeRate) {
     setState(() {
       _inAsyncCall = true;
     });
-    http.get('https://api.paystack.co/transaction/verify/$reference', headers: {
-      'Authorization': 'Bearer sk_test_52b35d5eaa9f39c9411d14d9e5fb336602fc8773'
-    }).then((res) {
-      print(res.body);
-      Map<String, dynamic> resp = json.decode(res.body);
-      bool status = resp['status'];
-      String message = resp['message'];
-      Map<String, dynamic> dt = resp['data'];
-      String statusMessage = dt['status'];
-      if (status && statusMessage == 'success') {
+    /*https://api.paystack.co/transaction/verify/ Bearer sk_test_52b35d5eaa9f39c9411d14d9e5fb336602fc8773
+    , body: {
+      "txref": reference,
+      "SECKEY": "FLWSECK_TEST-38fd24d95eddb03b581c35199aee2093-X"
+    }
+    'https://api.ravepay.co/flwv3-pug/getpaidx/api/v2/verify'
+    */
+    http.get('https://us-central1-taconlinegiftshop.cloudfunctions.net/verifyTransaction?ref=$reference',
+        headers: {'Authorization': 'api ATCNoQUGOoEvTwqWigCR'}).then((resp) {
+//      print(res.body);
+      Map<String, dynamic> res = json.decode(resp.body);
+
+      if (res['error'] != null) {
+        setState(() {
+          _inAsyncCall = false;
+        });
+        new GeneralUtils().neverSatisfied(
+            context, 'Error', 'Payment not successful. Please try again.');
+        return;
+      }
+
+//      bool status = resp['status'];
+//      String message = resp['message'];
+//      Map<String, dynamic> dt = resp['data'];
+//      String statusMessage = dt['status'];
+
+      Map<String, dynamic> data = res['data'];
+      String message = data['status'];
+      String cc = data['chargecode'];
+      dynamic amt = data['amount'];
+      String curr = data['currency'];
+      dynamic appfee = data['appfee'];
+      dynamic _mf = data['amountsettledforthistransaction'];
+
+      if (message == "successful" && (cc == '00' || cc == '0')) {
         //run other operation
-        addOrderToFirebase(reference);
+        addOrderToFirebase(reference, exchangeRate, appfee, _mf);
 //        Map<String, dynamic> data = resp['data'];
 //        Map<String, dynamic> auth = data['authorization'];
 //        String auth_code = auth['authorization_code'];
@@ -446,21 +684,26 @@ class _paymentState extends State<payment> {
     });
   }
 
-  void addOrderToFirebase(String orderId) {
+  void addOrderToFirebase(String orderId, String exchangeRate, dynamic appfee,
+      dynamic merchant_fee) {
     final res = ss.getItem('currency');
     Map<String, dynamic> data = jsonDecode(res);
     String curr = data['currency'];
     String country = data['country'];
     DateTime dt = DateTime.now();
     final key = FirebaseDatabase.instance.reference().push().key;
-    final track = FirebaseDatabase.instance.reference().push().key.substring(1, 6); //'${Random().nextInt(999999)}${Random().nextInt(999999)}';
-
+    final track = double.parse('${Random().nextInt(99999)}${Random().nextInt(99999)}').ceil();
+    //FirebaseDatabase.instance.reference().push().key.substring(1, 6);
     List<dynamic> track_details = new List();
     final mT = Tracking('Order Placed', 'We have received your order', 'start',
         '${dt.month}/${dt.day}/${dt.year} - ${dt.hour}:${dt.minute}:${dt.second}');
     track_details.add(mT.toJSON());
 
-    var other_payment_details = {'tax': _tax, 'delivery': _delivery};
+    var other_payment_details = {
+      'tax': _tax,
+      'delivery': _delivery,
+      'delivery_type': delivery_selected
+    };
 
     var months = [
       "Jan",
@@ -489,19 +732,25 @@ class _paymentState extends State<payment> {
     var order = {
       'carts': product,
       'currency_used': curr,
-      'transaction_id': orderId,
+      'conversion_rate': exchangeRate,
+      'payment_gateway_fee': appfee,
+      'merchant_fee': merchant_fee,
+      'payment_gateway_used': 'flutterwave',
+      'order_platform': 'mobile_app',
+      'transaction_id': double.parse(orderId).ceil(),
       'id': key,
       'country': country,
       'email': widget.details['email'],
       'created_date':
           '${months[dt.month - 1]} ${dt.day}, ${dt.year} - ${dt.hour}:${dt.minute}:${dt.second}',
+      'timestamp': FieldValue.serverTimestamp(),
       'track_id': track,
       'status': 'pending',
       'total_amount': ft,
       'shipping_details': widget.details,
       'gift_card_style': '',
       'tracking_details': track_details,
-      'other_payment_detals': other_payment_details
+      'other_payment_details': other_payment_details
     };
 
     dynamic alert = product[0];
@@ -581,10 +830,10 @@ class _paymentState extends State<payment> {
       Map<String, dynamic> item = cart['product'];
       int quantity = cart['quantity'];
       dynamic gift_items = item['items'];
-      if(gift_items != null) {
+      if (gift_items != null) {
         for (dynamic gi in gift_items) {
           var gi_id = gi['id'];
-          if(gi_id != null) {
+          if (gi_id != null) {
             runFireStoreTransaction(gi_id);
           }
         }
@@ -594,16 +843,17 @@ class _paymentState extends State<payment> {
   }
 
   runFireStoreTransaction(String id) {
-    var itemRef = Firestore.instance
+    Firestore.instance
         .collection('db')
         .document('tacadmin')
         .collection('items')
-        .document(id);
-    Firestore.instance.runTransaction((t) async {
-      var doc = await t.get(itemRef);
-      var newstock_level = doc.data['stock_level'] - 1;
-      t.update(itemRef, {'stock_level': newstock_level});
-    });
+        .document(
+            id).updateData(<String, dynamic>{'stock_level': FieldValue.increment(-1)});
+//    Firestore.instance.runTransaction((t) async {
+//      var doc = await t.get(itemRef);
+//      var newstock_level = doc.data['stock_level'] - 1;
+//      t.update(itemRef, {'stock_level': newstock_level});
+//    });
   }
 
   Future<void> uploadPDFToFirebase(
@@ -684,7 +934,7 @@ _showDialog(BuildContext ctx, tracking_id) {
             child: Padding(
           padding: const EdgeInsets.only(top: 16.0),
           child: Text(
-            "Yuppy!!",
+            "Great!!",
             style: _txtCustomHead,
           ),
         )),

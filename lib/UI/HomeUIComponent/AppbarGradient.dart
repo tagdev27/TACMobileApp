@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:treva_shop_flutter/ListItem/GiftBaskets.dart';
+import 'package:treva_shop_flutter/UI/AcountUIComponent/CallCenter.dart';
 import 'package:treva_shop_flutter/UI/AcountUIComponent/Notification.dart';
 import 'package:treva_shop_flutter/UI/CartUIComponent/CartLayout.dart';
 import 'package:treva_shop_flutter/UI/HomeUIComponent/Search.dart';
 import 'package:treva_shop_flutter/UI/AcountUIComponent/Message.dart';
+import 'package:treva_shop_flutter/Utils/colors.dart';
 import 'package:treva_shop_flutter/Utils/general.dart';
 
 class AppbarGradient extends StatefulWidget {
@@ -34,8 +36,8 @@ class _AppbarGradientState extends State<AppbarGradient> {
         /// gradient in appbar
           gradient: LinearGradient(
               colors: [
-                const Color(0xFFA3BDED),
-                const Color(0xFF6991C7),
+                const Color(0xFFEC008C),//Color(0xFFA3BDED),
+                const Color(0xFFEC008C),//Color(0xFF6991C7),
               ],
               begin: const FractionalOffset(0.0, 0.0),
               end: const FractionalOffset(1.0, 0.0),
@@ -101,9 +103,9 @@ class _AppbarGradientState extends State<AppbarGradient> {
           /// Icon chat (if user click navigate to chat layout)
           InkWell(
               onTap: () {
-                showConvo();
-//                Navigator.of(context).push(
-//                    PageRouteBuilder(pageBuilder: (_, __, ___) => new chat()));
+                //showConvo();
+                Navigator.of(context).push(
+                    PageRouteBuilder(pageBuilder: (_, __, ___) => new callCenter()));
               },
               child: Image.asset(
                 "assets/img/chat.png",
@@ -126,7 +128,7 @@ class _AppbarGradientState extends State<AppbarGradient> {
                 ),
                 CircleAvatar(
                   radius: 8.6,
-                  backgroundColor: Colors.redAccent,
+                  backgroundColor: Colors.purple,
                   child: Text(
                     CountNotice,
                     style: TextStyle(fontSize: 13.0, color: Colors.white),

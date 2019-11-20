@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:treva_shop_flutter/Utils/colors.dart';
 
 class aboutApps extends StatefulWidget {
   @override
@@ -24,6 +25,7 @@ class _aboutAppsState extends State<aboutApps> {
 
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: Text(
           "About Application",
@@ -34,7 +36,7 @@ class _aboutAppsState extends State<aboutApps> {
               fontFamily: "Gotik"),
         ),
         centerTitle: true,
-        iconTheme: IconThemeData(color: Color(0xFF6991C7)),
+        iconTheme: IconThemeData(color: Color(MyColors.primary_color)),
         elevation: 0.0,
       ),
       body: SingleChildScrollView(
@@ -53,10 +55,10 @@ class _aboutAppsState extends State<aboutApps> {
                 padding: EdgeInsets.only(top: 10.0, left: 15.0),
                 child: Row(
                   children: <Widget>[
-//                    Image.asset(
-//                      "assets/img/Logo.png",
-//                      height: 50.0,
-//                    ),
+                    Image.network(
+                      "https://tacgifts.com/assets/images/icon/logo.png",
+                      height: 50.0,
+                    ),
                     Padding(
                       padding: const EdgeInsets.only(left: 12.0),
                       child: Column(
@@ -87,12 +89,15 @@ class _aboutAppsState extends State<aboutApps> {
               Padding(
                 padding: const EdgeInsets.all(15.0),
                 child: Text(
-                  "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the "
-                      "industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and "
-                      "scrambled it to make a type specimen book. \n\n\n It has survived not only five centuries, but also "
-                      "the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the "
-                      "1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with "
-                      "desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
+                  "TAC is an e-commerce gifting services platform that aims at connecting users irrespective "
+                      "of their geographical locations to their loved ones through purchase and exchange of gifts and"
+                      " other concierge services in the celebration of notable and memorable events such as Birthdays,"
+                      " Wedding anniversaries, Promotions, Baby showers, special seasons etc.\n\n"
+                  "TAC’s desire is to provide exceptional gifts for all of life’s special occasion. "
+                  "With our wide range of gifts & gifting Services from personalized gifts to fresh flowers to gourmet gifts, "
+                  "we give you variety of amazing options to create a memorable experience for your loved ones on their special day. "
+                  "We’re your number one Gifting destination for every special occasion."
+                  ,
                   style: _txtCustomSub,
                   textAlign: TextAlign.justify,
                 ),

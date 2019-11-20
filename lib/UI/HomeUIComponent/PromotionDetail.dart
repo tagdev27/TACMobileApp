@@ -3,6 +3,8 @@ import 'package:shimmer/shimmer.dart';
 import 'package:treva_shop_flutter/ListItem/GiftBaskets.dart';
 import 'package:treva_shop_flutter/ListItem/PromotionData.dart';
 import 'package:treva_shop_flutter/UI/HomeUIComponent/DetailProduct.dart';
+import 'package:treva_shop_flutter/UI/HomeUIComponent/Search.dart';
+import 'package:treva_shop_flutter/Utils/colors.dart';
 import 'package:treva_shop_flutter/Utils/general.dart';
 
 class promoDetail extends StatefulWidget {
@@ -32,18 +34,20 @@ class _promoDetailState extends State<promoDetail> {
 
   List<Products> query_products = new List();
 
+  final textController = new TextEditingController(text: '');
+
   ///
   /// SetState after imageNetwork loaded to change list card
   ///
   @override
   void initState() {
-    imageNetwork.resolve(new ImageConfiguration()).addListener((_,__){
+    imageNetwork.resolve(new ImageConfiguration()).addListener(new ImageStreamListener((ImageInfo image, bool synchronousCall) { /*...*/
       if(mounted){
         setState(() {
           imageLoad = false;
         });
       }
-    });
+    }));
     // TODO: implement initState
     super.initState();
     query_products = widget.products;
@@ -61,6 +65,7 @@ class _promoDetailState extends State<promoDetail> {
           child: Theme(
             data: ThemeData(hintColor: Colors.transparent),
             child: TextFormField(
+              controller: textController,
               decoration: InputDecoration(
                 border: InputBorder.none,
                   icon: Icon(
@@ -69,15 +74,15 @@ class _promoDetailState extends State<promoDetail> {
                     size: 18.0,
                   ),
                   suffixIcon: IconButton(icon: Icon(Icons.clear), onPressed: (){
+                    if(textController.text.length == 0) return;
                     setState(() {
-                      query = '';
+                      textController.clear();
                       query_products = widget.products;
                     });
                   }),
-                  hintText: "Search Items Promotion",
+                  hintText: "Search Gift Baskets",
                   hintStyle: TextStyle(color: Colors.black38, fontSize: 14.0)),
                 textInputAction: TextInputAction.search,
-              initialValue: query,
               onFieldSubmitted: (searchValue) {
                 if(searchValue.isNotEmpty){
                   setState(() {
@@ -150,16 +155,33 @@ class _promoDetailState extends State<promoDetail> {
               fontFamily: "Gotik"),
         ),
         iconTheme: IconThemeData(
-          color: Color(0xFF6991C7),
+          color: Color(MyColors.primary_color),
         ),
         elevation: 0.0,
+        actions: <Widget>[
+          InkWell(
+            onTap: () {
+              Navigator.of(context).push(PageRouteBuilder(
+                  pageBuilder: (_, __, ___) =>
+                  new searchAppbar(widget.products)));
+            },
+            child: Padding(
+              padding: const EdgeInsets.only(right: 20.0),
+              child: Icon(
+                Icons.search,
+                size: 27.0,
+                color: Colors.black54,
+              ),
+            ),
+          )
+        ],
       ),
       body: SingleChildScrollView(
         child: Container(
           child: Column(
             /// Calling search and grid variable
             children: <Widget>[
-              _search,
+//              _search,
               _grid,
             ],
           ),
@@ -233,7 +255,7 @@ class ItemGrid extends StatelessWidget {
                     height: 25.5,
                     width: 55.0,
                     decoration: BoxDecoration(
-                        color: Color(0xFFD7124A),
+                        color: Color(MyColors.primary_color),
                         borderRadius: BorderRadius.only(
                             bottomRight: Radius.circular(20.0),
                             topLeft: Radius.circular(5.0))),
@@ -371,7 +393,7 @@ class loadingMenuItemCard extends StatelessWidget {
                             height: 25.5,
                             width: 65.0,
                             decoration: BoxDecoration(
-                                color: Color(0xFFD7124A),
+                                color: Color(MyColors.primary_color),
                                 borderRadius: BorderRadius.only(
                                     bottomRight: Radius.circular(20.0),
                                     topLeft: Radius.circular(5.0))),

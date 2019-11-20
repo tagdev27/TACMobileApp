@@ -10,12 +10,14 @@ import 'package:treva_shop_flutter/UI/LoginOrSignup/LoginAnimation.dart';
 import 'package:treva_shop_flutter/UI/LoginOrSignup/Signup.dart';
 import 'package:treva_shop_flutter/Utils/backgroud_utils.dart';
 import 'package:treva_shop_flutter/Utils/email_service.dart';
+import 'package:treva_shop_flutter/Utils/general.dart';
 import 'package:treva_shop_flutter/Utils/progress.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:treva_shop_flutter/Utils/storage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
+import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 
 class Signup extends StatefulWidget {
   @override
@@ -58,11 +60,10 @@ class _SignupState extends State<Signup> with TickerProviderStateMixin {
     _firebaseMessaging.requestNotificationPermissions(
         const IosNotificationSettings(sound: true, badge: true, alert: true));
     getTokenAndDeviceInfo();
-    ss.getPrefItem('currency').then((cc){
+    String cc = ss.getItem('currency');
       if (cc.isEmpty) {
         new Utils().getUserIpDetails();
       }
-    });
   }
 
   getTokenAndDeviceInfo() async {
@@ -324,7 +325,9 @@ class _SignupState extends State<Signup> with TickerProviderStateMixin {
     _handleGoogleSignIn();
   }
 
-  signupWithFacebook() {}
+  signupWithFacebook() {
+    _handleFacebookSignIn();
+  }
 
   signupWithEmailAndPassword() {
     if (!validateAndSave()) {
@@ -339,7 +342,7 @@ class _SignupState extends State<Signup> with TickerProviderStateMixin {
         .createUserWithEmailAndPassword(email: mEmail, password: mPassword)
         .then((user) {
       user.sendEmailVerification();
-      checkFirestoreAndRedirect(mEmail, null, null);
+      checkFirestoreAndRedirect(mEmail, null, null, user);
     }).catchError((err) {
       pd.dismissDialog();
       pd.displayMessage(context, 'Error', '${err.toString()}');
@@ -347,8 +350,8 @@ class _SignupState extends State<Signup> with TickerProviderStateMixin {
   }
 
   checkFirestoreAndRedirect(String email, GoogleSignInAuthentication googleAuth,
-      GoogleSignInAccount googleUser) async {
-    String gp = await ss.getPrefItem('currency');
+      GoogleSignInAccount googleUser, FirebaseUser firebaseUser) async {
+    String gp = ss.getItem('currency');
     Map<String, dynamic> data = jsonDecode(gp);
     if (googleAuth != null) {
       Map<String, dynamic> newUserData = new Map();
@@ -360,12 +363,15 @@ class _SignupState extends State<Signup> with TickerProviderStateMixin {
       };
       String id = FirebaseDatabase.instance.reference().push().key;
       newUserData['id'] = id;
-      newUserData['blocked'] =  false;
-      newUserData['country'] =  data['country'];
-      newUserData['created_date'] =
+      newUserData['blocked'] = false;
+      newUserData['country'] = data['country'];
+      newUserData['created_date'] = new DateTime.now().toString();
       newUserData['email'] = email;
       newUserData['firstname'] = googleUser.displayName.split(' ')[0];
       newUserData['lastname'] = googleUser.displayName.split(' ')[1];
+      newUserData['userId'] = firebaseUser.uid;
+      newUserData['picture'] = googleUser.photoUrl;
+      newUserData['msgId'] = msgId;
       Firestore.instance
           .collection('users')
           .document(email.toLowerCase())
@@ -384,12 +390,15 @@ class _SignupState extends State<Signup> with TickerProviderStateMixin {
       Map<String, dynamic> newUserData = new Map();
       String id = FirebaseDatabase.instance.reference().push().key;
       newUserData['id'] = id;
-      newUserData['blocked'] =  false;
-      newUserData['country'] =  data['country'];
-      newUserData['created_date'] =
+      newUserData['blocked'] = false;
+      newUserData['country'] = data['country'];
+      newUserData['created_date'] = new DateTime.now().toString();
       newUserData['email'] = email;
       newUserData['firstname'] = fullname.split(' ')[0];
       newUserData['lastname'] = fullname.split(' ')[1];
+      newUserData['userId'] = firebaseUser.uid;
+      newUserData['picture'] = 'https://tacadmin.firebaseapp.com/assets/img/default-avatar.png';
+      newUserData['msgId'] = msgId;
       Firestore.instance
           .collection('users')
           .document(email.toLowerCase())
@@ -502,10 +511,10 @@ class _SignupState extends State<Signup> with TickerProviderStateMixin {
                                               style="height:20px;line-height:14px;font-size:12px">
                                               &nbsp;</div>
 
-                                          <a href="https://tacgifts.com/home/left-sidebar/product/${p['id']}"
+                                          <a href="https://tacgifts.com/home/product/${p['menu_link']}"
                                               style="display:block;font-family:'Source Sans Pro',Verdana,Tahoma,Geneva,sans-serif;color:#ff9800;font-size:15px;line-height:18px;text-decoration:none;white-space:nowrap;text-transform:uppercase"
                                               target="_blank"
-                                              data-saferedirecturl="https://www.google.com/url?q=https://tacgifts.com/home/left-sidebar/product/${p['id']}">
+                                              data-saferedirecturl="https://www.google.com/url?q=https://tacgifts.com/home/product/${p['menu_link']}">
 
                                               <font face="'Source Sans Pro', sans-serif"
                                                   color="#ff9800"
@@ -678,10 +687,10 @@ class _SignupState extends State<Signup> with TickerProviderStateMixin {
                                                                         style="height:20px;line-height:14px;font-size:12px">
                                                                         &nbsp;</div>
 
-                                                                    <a href="https://tacgifts.com/home/left-sidebar/product/${p['id']}"
+                                                                    <a href="https://tacgifts.com/home/product/${p['menu_link']}"
                                                                         style="display:block;font-family:'Source Sans Pro',Verdana,Tahoma,Geneva,sans-serif;color:#ff9800;font-size:15px;line-height:18px;text-decoration:none;white-space:nowrap;text-transform:uppercase"
                                                                         target="_blank"
-                                                                        data-saferedirecturl="https://www.google.com/url?q=https://tacgifts.com/home/left-sidebar/product/${p['id']}">
+                                                                        data-saferedirecturl="https://www.google.com/url?q=https://tacgifts.com/home/product/${p['menu_link']}">
 
                                                                         <font face="'Source Sans Pro', sans-serif"
                                                                             color="#ff9800"
@@ -738,10 +747,35 @@ class _SignupState extends State<Signup> with TickerProviderStateMixin {
         idToken: googleAuth.idToken,
       );
       final FirebaseUser user = await _auth.signInWithCredential(credential);
-      checkFirestoreAndRedirect(mEmail, googleAuth, googleUser);
+      pd.displayDialog("Please wait...");
+      checkFirestoreAndRedirect(mEmail, googleAuth, googleUser, user);
       return user;
     }catch(e){
       print('ex === ${e.toString()}');
+    }
+    return null;
+  }
+
+  Future<void> _handleFacebookSignIn() async {
+    final facebookLogin = FacebookLogin();
+    final result = await facebookLogin.logIn(['email','user_birthday', 'user_gender']);//'user_friends',
+    switch (result.status) {
+      case FacebookLoginStatus.loggedIn:
+        final FirebaseAuth _auth = FirebaseAuth.instance;
+        final AuthCredential credential = FacebookAuthProvider.getCredential(accessToken: result.accessToken.token);
+        final FirebaseUser user = await _auth.signInWithCredential(credential);
+        print(user);
+        //pd.displayDialog("Please wait...");
+        //checkFirestoreAndRedirect(mEmail, null, null, user);
+        //_sendTokenToServer(result.accessToken.token);
+        //_showLoggedInUI();
+        break;
+      case FacebookLoginStatus.cancelledByUser:
+        //_showCancelledMessage();
+        break;
+      case FacebookLoginStatus.error:
+        new GeneralUtils().neverSatisfied(context, 'Error', result.errorMessage);
+        break;
     }
   }
 

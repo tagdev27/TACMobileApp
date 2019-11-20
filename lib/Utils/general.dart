@@ -62,7 +62,8 @@ class GeneralUtils {
     if (curr == '₦') {
       return '${formattedMoney(normalizedPrice, 'NGN')}';
     }
-    return '${formattedMoney(normalizedPrice, '\$')}';
+//    return '${formattedMoney(normalizedPrice, '\$')}';
+    return '${formattedMoney(normalizedPrice, curr)}';
   }
 
   String currencyFormattedMoneyDouble(double price) {
@@ -74,7 +75,8 @@ class GeneralUtils {
     if (curr == '₦') {
       return '${formattedMoney(normalizedPrice, 'NGN')}';
     }
-    return '${formattedMoney(normalizedPrice, '\$')}';
+//    return '${formattedMoney(normalizedPrice, '\$')}';
+    return '${formattedMoney(normalizedPrice, curr)}';
   }
 
   List<dynamic> getCartItems() {

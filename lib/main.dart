@@ -52,7 +52,8 @@ class myApp extends StatelessWidget {
       /// Move splash screen to ChoseLogin Layout
       /// Routes
       routes: <String, WidgetBuilder>{
-        "login": (BuildContext context) => new onBoarding()
+        "login": (BuildContext context) => new onBoarding(),
+        "choose": (BuildContext context) => new ChoseLogin()
       },
     );
   }
@@ -83,10 +84,11 @@ class _SplashScreenState extends State<SplashScreen> {
       Navigator.of(context).pushReplacementNamed("login");
     }else {
       if(logged == 'signInAnonymously'){
-        FirebaseAuth.instance.signOut().then((v){
-          ss.clearPref();
-          Navigator.of(context).pushReplacementNamed("login");
-        });
+//        FirebaseAuth.instance.signOut().then((v){
+//
+//        });
+        ss.clearPref();
+        Navigator.of(context).pushReplacementNamed("choose");
         return;
       }else{
         if(logged == 'true'){
@@ -129,7 +131,7 @@ class _SplashScreenState extends State<SplashScreen> {
         /// Set Background image in splash screen layout (Click to open code)
         decoration: BoxDecoration(
             image: DecorationImage(
-                image: AssetImage('assets/img/man.png'), fit: BoxFit.cover)),
+                image: AssetImage('assets/img/tac_bg.png'), fit: BoxFit.cover)),
         child: Container(
           /// Set gradient black in image splash screen (Click to open code)
           decoration: BoxDecoration(
@@ -163,7 +165,7 @@ class _SplashScreenState extends State<SplashScreen> {
                     Hero(
                       tag: "Tac",
                       child: Text(
-                        "TAC Online \nGift Shop",
+                        "TAC - Online \nGift Shop",
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontFamily: 'Sans',

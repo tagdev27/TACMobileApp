@@ -3,6 +3,7 @@ import 'package:treva_shop_flutter/UI/BrandUIComponent/BrandLayout.dart';
 import 'package:treva_shop_flutter/UI/CartUIComponent/CartLayout.dart';
 import 'package:treva_shop_flutter/UI/HomeUIComponent/Home.dart';
 import 'package:treva_shop_flutter/UI/AcountUIComponent/Profile.dart';
+import 'package:treva_shop_flutter/Utils/colors.dart';
 
 class bottomNavigationBar extends StatefulWidget {
  @override
@@ -41,10 +42,12 @@ class _bottomNavigationBarState extends State<bottomNavigationBar> {
        child: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         currentIndex: currentIndex,
-        fixedColor: Color(0xFF6991C7),
+        fixedColor: Color(MyColors.primary_color),//Color(0xFF6991C7),
         onTap: (value) {
-         currentIndex = value;
-         setState(() {});
+         //currentIndex = value;
+         setState(() {
+           currentIndex = value;
+         });
         },
         items: [
          BottomNavigationBarItem(
@@ -74,7 +77,7 @@ class _bottomNavigationBarState extends State<bottomNavigationBar> {
               size: 24.0,
              ),
              title: Text(
-              "Acount",
+              "Account",
               style: TextStyle(fontFamily: "Berlin", letterSpacing: 0.5),
              )),
         ],

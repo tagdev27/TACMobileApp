@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:treva_shop_flutter/ListItem/BrandDataList.dart';
+import 'package:treva_shop_flutter/Utils/colors.dart';
 
 class chatItem extends StatefulWidget {
   @override
@@ -25,7 +26,7 @@ class _chatItemState extends State<chatItem> with TickerProviderStateMixin {
           style: TextStyle(
               fontFamily: "Gotik", fontSize: 18.0, color: Colors.black54),
         ),
-        iconTheme: IconThemeData(color: Color(0xFF6991C7)),
+        iconTheme: IconThemeData(color: Color(MyColors.primary_color)),
         centerTitle: true,
         backgroundColor: Colors.white,
       ),

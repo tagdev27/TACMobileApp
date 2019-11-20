@@ -7,11 +7,13 @@ import 'package:treva_shop_flutter/UI/BottomNavigationBar.dart';
 import 'package:treva_shop_flutter/UI/LoginOrSignup/LoginAnimation.dart';
 import 'package:treva_shop_flutter/UI/LoginOrSignup/Signup.dart';
 import 'package:treva_shop_flutter/Utils/backgroud_utils.dart';
+import 'package:treva_shop_flutter/Utils/general.dart';
 import 'package:treva_shop_flutter/Utils/progress.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:treva_shop_flutter/Utils/storage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 
 class loginScreen extends StatefulWidget {
   @override
@@ -114,7 +116,7 @@ class _loginScreenState extends State<loginScreen>
         /// Set Background image in layout (Click to open code)
         decoration: BoxDecoration(
             image: DecorationImage(
-          image: AssetImage("assets/img/loginscreenbackground.png"),
+          image: AssetImage("assets/img/SliderLogin4.png"),
           fit: BoxFit.cover,
         )),
         child: Container(
@@ -161,7 +163,7 @@ class _loginScreenState extends State<loginScreen>
                                 Hero(
                                   tag: "Tac",
                                   child: Text(
-                                    "TAC - Online Gift Shop",
+                                    "TAC Online Gift Shop",
                                     style: TextStyle(
                                         fontWeight: FontWeight.w900,
                                         letterSpacing: 0.6,
@@ -403,29 +405,53 @@ class _loginScreenState extends State<loginScreen>
   }
 
   Future<FirebaseUser> _handleGoogleSignIn() async {
-    final GoogleSignIn _googleSignIn = GoogleSignIn(
-      scopes: [
-        'email',
-        'profile',
-        'https://www.googleapis.com/auth/calendar.events.readonly',
-      ],
-    );
-    final FirebaseAuth _auth = FirebaseAuth.instance;
-    final GoogleSignInAccount googleUser = await _googleSignIn.signIn();
-    final GoogleSignInAuthentication googleAuth =
-        await googleUser.authentication;
+    try {
+      final GoogleSignIn _googleSignIn = GoogleSignIn(
+        scopes: [
+          'email',
+          'profile',
+          'https://www.googleapis.com/auth/calendar.events.readonly',
+        ],
+      );
+      final FirebaseAuth _auth = FirebaseAuth.instance;
+      final GoogleSignInAccount googleUser = await _googleSignIn.signIn();
+      final GoogleSignInAuthentication googleAuth =
+      await googleUser.authentication;
 
-    final AuthCredential credential = GoogleAuthProvider.getCredential(
-      accessToken: googleAuth.accessToken,
-      idToken: googleAuth.idToken,
-    );
-    final FirebaseUser user = await _auth.signInWithCredential(credential);
-    checkFirestoreAndRedirect(mEmail, googleAuth);
-    return user;
+      final AuthCredential credential = GoogleAuthProvider.getCredential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+      final FirebaseUser user = await _auth.signInWithCredential(credential);
+      checkFirestoreAndRedirect(mEmail, googleAuth);
+      return user;
+    }catch(err) {
+      print(err);
+    }
+    return null;
   }
 
-  _handleFacebookSignIn() {
-
+  Future<void> _handleFacebookSignIn() async {
+    final facebookLogin = FacebookLogin();
+    final result = await facebookLogin.logIn(['email','user_birthday','user_gender']);
+    switch (result.status) {
+      case FacebookLoginStatus.loggedIn:
+        final FirebaseAuth _auth = FirebaseAuth.instance;
+        final AuthCredential credential = FacebookAuthProvider.getCredential(accessToken: result.accessToken.token);
+        final FirebaseUser user = await _auth.signInWithCredential(credential);
+        print(user);
+        //pd.displayDialog("Please wait...");
+        //checkFirestoreAndRedirect(mEmail, null, null, user);
+        //_sendTokenToServer(result.accessToken.token);
+        //_showLoggedInUI();
+        break;
+      case FacebookLoginStatus.cancelledByUser:
+      //_showCancelledMessage();
+        break;
+      case FacebookLoginStatus.error:
+        new GeneralUtils().neverSatisfied(context, 'Error', result.errorMessage);
+        break;
+    }
   }
 
   bool validateAndSave() {

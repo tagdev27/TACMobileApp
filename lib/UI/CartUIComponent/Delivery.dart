@@ -66,7 +66,7 @@ class _deliveryState extends State<delivery> {
         ),
         centerTitle: true,
         backgroundColor: Colors.white,
-        iconTheme: IconThemeData(color: Color(0xFF6991C7)),
+        iconTheme: IconThemeData(color: Color(MyColors.primary_color)),
       ),
       body: SingleChildScrollView(
         child: Container(
@@ -80,7 +80,7 @@ class _deliveryState extends State<delivery> {
                   style: TextStyle(
                       letterSpacing: 0.1,
                       fontSize: 18.0,
-                      color: Colors.black,
+                      color: Color(MyColors.primary_color),
                       fontWeight: FontWeight.bold,
                       fontFamily: ""),
                 ),),
@@ -214,7 +214,7 @@ class _deliveryState extends State<delivery> {
                   style: TextStyle(
                       letterSpacing: 0.1,
                       fontSize: 18.0,
-                      color: Colors.black,
+                      color: Color(MyColors.primary_color),
                       fontWeight: FontWeight.bold,
                       fontFamily: ""),
                 ),),
@@ -418,7 +418,7 @@ class _deliveryState extends State<delivery> {
                   style: TextStyle(
                       letterSpacing: 0.1,
                       fontSize: 18.0,
-                      color: Colors.black,
+                      color: Color(MyColors.primary_color),
                       fontWeight: FontWeight.bold,
                       fontFamily: ""),
                 ),),
@@ -453,36 +453,36 @@ class _deliveryState extends State<delivery> {
                   ),
                 ),
                 Divider(height: 1.0,),
-                ListTile(
-                  title: Text(
-                    "Gift Card Message",
-                    style: TextStyle(
-                        letterSpacing: 0.1,
-                        fontSize: 16.0,
-                        color: Colors.grey,
-                        fontFamily: ""),
-                  ),
-                  trailing: Container(
-                    width: 210.0,
-                    child: TextFormField(
-                      decoration: InputDecoration(
-                          hintText: "Gift Card Message",
-                          hintStyle: TextStyle(color: Colors.black),
-                          border: InputBorder.none),
-                      keyboardType: TextInputType.text,
-                      style: TextStyle(
-                          letterSpacing: 0.1,
-                          fontSize: 18.0,
-                          color: Colors.black,
-                          fontFamily: ""),
-                      autofocus: true,
-                      onSaved: (value) => card_message = value,
-                      textAlign: TextAlign.right,
-                      initialValue: '',
-                    ),
-                  ),
-                ),
-                Divider(height: 1.0,),
+//                ListTile(
+//                  title: Text(
+//                    "Gift Card Message",
+//                    style: TextStyle(
+//                        letterSpacing: 0.1,
+//                        fontSize: 16.0,
+//                        color: Colors.grey,
+//                        fontFamily: ""),
+//                  ),
+//                  trailing: Container(
+//                    width: 210.0,
+//                    child: TextFormField(
+//                      decoration: InputDecoration(
+//                          hintText: "Gift Card Message",
+//                          hintStyle: TextStyle(color: Colors.black),
+//                          border: InputBorder.none),
+//                      keyboardType: TextInputType.text,
+//                      style: TextStyle(
+//                          letterSpacing: 0.1,
+//                          fontSize: 18.0,
+//                          color: Colors.black,
+//                          fontFamily: ""),
+//                      autofocus: true,
+//                      onSaved: (value) => card_message = value,
+//                      textAlign: TextAlign.right,
+//                      initialValue: '',
+//                    ),
+//                  ),
+//                ),
+//                Divider(height: 1.0,),
                 InkWell(
                   onTap: () {
                     gotoPayment();
@@ -492,7 +492,7 @@ class _deliveryState extends State<delivery> {
                     width: 300.0,
                     margin: EdgeInsets.only(left: 20.0, right: 20.0, top: 40.0),
                     decoration: BoxDecoration(
-                        color: Colors.indigoAccent,
+                        color: Color(MyColors.primary_color),
                         borderRadius: BorderRadius.all(Radius.circular(40.0))),
                     child: Center(
                       child: Text(
@@ -523,7 +523,7 @@ class _deliveryState extends State<delivery> {
       }
       Map<String, dynamic> details = Map();
       details['address'] = address;
-      details['card_message'] = card_message;
+      details['card_message'] = "";//card_message;
       details['country'] = country;
       details['email'] = email;
       details['firstname'] = fn;

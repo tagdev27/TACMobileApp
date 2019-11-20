@@ -1,10 +1,12 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:treva_shop_flutter/Library/carousel_pro/carousel_pro.dart';
 import 'package:flutter/material.dart';
 import 'package:treva_shop_flutter/ListItem/GiftBaskets.dart';
 import 'package:treva_shop_flutter/ListItem/HomeGridItemRecomended.dart';
 import 'package:treva_shop_flutter/ListItem/Rev.dart';
+import 'package:treva_shop_flutter/UI/AcountUIComponent/CallCenter.dart';
 import 'package:treva_shop_flutter/UI/CartUIComponent/CartLayout.dart';
 import 'package:treva_shop_flutter/UI/HomeUIComponent/ChatItem.dart';
 import 'package:treva_shop_flutter/UI/CartUIComponent/Delivery.dart';
@@ -13,6 +15,7 @@ import 'package:flutter_rating/flutter_rating.dart';
 import 'package:treva_shop_flutter/UI/HomeUIComponent/PromotionDetail.dart';
 import 'package:treva_shop_flutter/UI/HomeUIComponent/ReviewLayout.dart';
 import 'package:treva_shop_flutter/Utils/backgroud_utils.dart';
+import 'package:treva_shop_flutter/Utils/colors.dart';
 import 'package:treva_shop_flutter/Utils/general.dart';
 
 class detailProduk extends StatefulWidget {
@@ -51,8 +54,10 @@ class _detailProdukState extends State<detailProduk> {
 //    final pro = new Utils().getRelatedProducts(gridItem.category);
     final rev = await new Utils().getReviews(gridItem.key);
     if(!mounted) return;
+    final max = gridItem.category.split(',').length;
+    final random_number = new Random().nextInt(max);
     setState(() {
-      products = new Utils().getRelatedProducts(pro, gridItem.category);
+      products = new Utils().getRelatedProducts(pro, gridItem.category.split(',')[random_number]);
       mRev = rev;
     });
 //    new Timer(Duration(milliseconds: 500), (){
@@ -103,26 +108,26 @@ class _detailProdukState extends State<detailProduk> {
                           gridItem.description,
                             style: _detailText),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 20.0),
-                        child: Text(
-                          "Specifications:",
-                          style: TextStyle(
-                              fontFamily: "Gotik",
-                              fontWeight: FontWeight.w600,
-                              fontSize: 15.0,
-                              color: Colors.black,
-                              letterSpacing: 0.3,
-                              wordSpacing: 0.5),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 20.0, left: 20.0),
-                        child: Text(
-                          gridItem.shortDetails,
-                          style: _detailText,
-                        ),
-                      )
+//                      Padding(
+//                        padding: const EdgeInsets.only(left: 20.0),
+//                        child: Text(
+//                          "Specifications:",
+//                          style: TextStyle(
+//                              fontFamily: "Gotik",
+//                              fontWeight: FontWeight.w600,
+//                              fontSize: 15.0,
+//                              color: Colors.black,
+//                              letterSpacing: 0.3,
+//                              wordSpacing: 0.5),
+//                        ),
+//                      ),
+//                      Padding(
+//                        padding: const EdgeInsets.only(top: 20.0, left: 20.0),
+//                        child: Text(
+//                          gridItem.shortDetails,
+//                          style: _detailText,
+//                        ),
+//                      )
                     ],
                   ),
                 ),
@@ -198,7 +203,7 @@ class _detailProdukState extends State<detailProduk> {
                 child: Text(
                   "See More",
                   style: TextStyle(
-                      color: Colors.indigoAccent.withOpacity(0.8),
+                      color: Colors.pinkAccent.withOpacity(0.8),
                       fontFamily: "Gotik",
                       fontWeight: FontWeight.w700),
                 ),
@@ -238,7 +243,7 @@ class _detailProdukState extends State<detailProduk> {
                 )),
                 CircleAvatar(
                   radius: 10.0,
-                  backgroundColor: Colors.red,
+                  backgroundColor: Color(MyColors.primary_color),
                   child: Text(
                     valueItemChart.toString(),
                     style: TextStyle(color: Colors.white, fontSize: 13.0),
@@ -375,69 +380,69 @@ class _detailProdukState extends State<detailProduk> {
                     ),
                   ),
                   /// Background white for chose Size and Color
-                  Padding(
-                    padding: const EdgeInsets.only(top: 10.0),
-                    child: Container(
-                      height: 120.0,
-                      width: 600.0,
-                      decoration:
-                          BoxDecoration(color: Colors.white, boxShadow: [
-                        BoxShadow(
-                          color: Color(0xFF656565).withOpacity(0.15),
-                          blurRadius: 1.0,
-                          spreadRadius: 0.2,
-                        )
-                      ]),
-                      child: Padding(
-                        padding: const EdgeInsets.only(top: 20.0, left: 20.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            Text("Size", style: _subHeaderCustomStyle),
-                            Row(
-                              children: getSizes(),
-//                              children: <Widget>[
-//                                RadioButtonCustom(
-//                                  txt: "S",
-//                                ),
-//                                Padding(padding: EdgeInsets.only(left: 15.0)),
-//                                RadioButtonCustom(
-//                                  txt: "M",
-//                                ),
-//                                Padding(padding: EdgeInsets.only(left: 15.0)),
-//                                RadioButtonCustom(
-//                                  txt: "L",
-//                                ),
-//                                Padding(padding: EdgeInsets.only(left: 15.0)),
-//                                RadioButtonCustom(
-//                                  txt: "XL",
-//                                ),
-//                              ],
-                            ),
-                            Padding(padding: EdgeInsets.only(top: 15.0)),
-//                            Divider(
-//                              color: Colors.black12,
-//                              height: 1.0,
-//                            ),
-//                            Padding(padding: EdgeInsets.only(top: 10.0)),
-//                            Text(
-//                              "Color",
-//                              style: _subHeaderCustomStyle,
-//                            ),
+//                  Padding(
+//                    padding: const EdgeInsets.only(top: 10.0),
+//                    child: Container(
+//                      height: 120.0,
+//                      width: 600.0,
+//                      decoration:
+//                          BoxDecoration(color: Colors.white, boxShadow: [
+//                        BoxShadow(
+//                          color: Color(0xFF656565).withOpacity(0.15),
+//                          blurRadius: 1.0,
+//                          spreadRadius: 0.2,
+//                        )
+//                      ]),
+//                      child: Padding(
+//                        padding: const EdgeInsets.only(top: 20.0, left: 20.0),
+//                        child: Column(
+//                          crossAxisAlignment: CrossAxisAlignment.start,
+//                          children: <Widget>[
+//                            Text("Size", style: _subHeaderCustomStyle),
 //                            Row(
-//                              children: <Widget>[
-//                                RadioButtonColor(Colors.black),
-//                                Padding(padding: EdgeInsets.only(left: 15.0)),
-//                                RadioButtonColor(Colors.white),
-//                                Padding(padding: EdgeInsets.only(left: 15.0)),
-//                                RadioButtonColor(Colors.blue),
-//                              ],
+//                              children: getSizes(),
+////                              children: <Widget>[
+////                                RadioButtonCustom(
+////                                  txt: "S",
+////                                ),
+////                                Padding(padding: EdgeInsets.only(left: 15.0)),
+////                                RadioButtonCustom(
+////                                  txt: "M",
+////                                ),
+////                                Padding(padding: EdgeInsets.only(left: 15.0)),
+////                                RadioButtonCustom(
+////                                  txt: "L",
+////                                ),
+////                                Padding(padding: EdgeInsets.only(left: 15.0)),
+////                                RadioButtonCustom(
+////                                  txt: "XL",
+////                                ),
+////                              ],
 //                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
+//                            Padding(padding: EdgeInsets.only(top: 15.0)),
+////                            Divider(
+////                              color: Colors.black12,
+////                              height: 1.0,
+////                            ),
+////                            Padding(padding: EdgeInsets.only(top: 10.0)),
+////                            Text(
+////                              "Color",
+////                              style: _subHeaderCustomStyle,
+////                            ),
+////                            Row(
+////                              children: <Widget>[
+////                                RadioButtonColor(Colors.black),
+////                                Padding(padding: EdgeInsets.only(left: 15.0)),
+////                                RadioButtonColor(Colors.white),
+////                                Padding(padding: EdgeInsets.only(left: 15.0)),
+////                                RadioButtonColor(Colors.blue),
+////                              ],
+////                            ),
+//                          ],
+//                        ),
+//                      ),
+//                    ),
+//                  ),
 
                   /// Background white for description
                   Padding(
@@ -483,7 +488,7 @@ class _detailProdukState extends State<detailProduk> {
                                   child: Text(
                                     "View More",
                                     style: TextStyle(
-                                      color: Colors.indigoAccent,
+                                      color: Color(MyColors.primary_color),
                                       fontSize: 15.0,
                                       fontFamily: "Gotik",
                                       fontWeight: FontWeight.w700,
@@ -652,7 +657,8 @@ class _detailProdukState extends State<detailProduk> {
                     InkWell(
                       onTap: () {
                         Navigator.of(context).push(PageRouteBuilder(
-                            pageBuilder: (_, ___, ____) => new chatItem()));
+//                            pageBuilder: (_, ___, ____) => new chatItem()));
+                            pageBuilder: (_, ___, ____) => new callCenter()));
                       },
                       child: Container(
                         height: 40.0,
@@ -678,7 +684,7 @@ class _detailProdukState extends State<detailProduk> {
                         height: 45.0,
                         width: 200.0,
                         decoration: BoxDecoration(
-                          color: Colors.indigoAccent,
+                          color: Color(MyColors.primary_color),
                         ),
                         child: Center(
                           child: Text(
@@ -798,13 +804,13 @@ class _RadioButtonCustomState extends State<RadioButtonCustom> {
           decoration: BoxDecoration(
               color: Colors.white,
               border: Border.all(
-                  color: itemSelected ? Colors.black54 : Colors.indigoAccent),
+                  color: itemSelected ? Colors.black54 : Colors.pinkAccent),
               shape: BoxShape.circle),
           child: Center(
             child: Text(
               txt,
               style: TextStyle(
-                  color: itemSelected ? Colors.black54 : Colors.indigoAccent),
+                  color: itemSelected ? Colors.black54 : Colors.pinkAccent),
             ),
           ),
         ),
@@ -852,7 +858,7 @@ class _RadioButtonColorState extends State<RadioButtonColor> {
           decoration: BoxDecoration(
               color: clr,
               border: Border.all(
-                  color: itemSelected ? Colors.black26 : Colors.indigoAccent,
+                  color: itemSelected ? Colors.black26 : Colors.pinkAccent,
                   width: 2.0),
               shape: BoxShape.circle),
         ),

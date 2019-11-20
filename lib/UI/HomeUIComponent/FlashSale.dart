@@ -5,6 +5,7 @@ import 'package:treva_shop_flutter/ListItem/FlashSaleItem.dart';
 import 'package:treva_shop_flutter/ListItem/GiftBaskets.dart';
 import 'package:treva_shop_flutter/UI/HomeUIComponent/FlashSaleDetail.dart';
 import 'package:treva_shop_flutter/UI/HomeUIComponent/Home.dart';
+import 'package:treva_shop_flutter/Utils/colors.dart';
 import 'package:treva_shop_flutter/Utils/general.dart';
 
 class flashSale extends StatefulWidget {
@@ -45,13 +46,13 @@ class _flashSaleState extends State<flashSale> {
   @override
   void initState() {
 
-    imageNetwork.resolve(new ImageConfiguration()).addListener((_,__){
+    imageNetwork.resolve(new ImageConfiguration()).addListener(new ImageStreamListener((ImageInfo image, bool synchronousCall) { /*...*/
       if(mounted){
         setState(() {
           loadImage = false;
         });
       }
-    });
+    }));
     // TODO: implement initState
     super.initState();
   }
@@ -138,7 +139,7 @@ class _flashSaleState extends State<flashSale> {
               fontFamily: "Gotik"),
         ),
         centerTitle: true,
-        iconTheme: IconThemeData(color: Color(0xFF6991C7)),
+        iconTheme: IconThemeData(color: Color(MyColors.primary_color)),
         elevation: 0.0,
       ),
       body: SingleChildScrollView(

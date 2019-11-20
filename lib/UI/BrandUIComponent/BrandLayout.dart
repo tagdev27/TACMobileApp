@@ -103,7 +103,7 @@ class itemCard extends StatelessWidget {
         onTap: () {
           Navigator.of(context).push(
             PageRouteBuilder(
-                pageBuilder: (_, __, ___) => new brandDetail(brand),
+                pageBuilder: (_, __, ___) => new brandDetail(null, null),
                 transitionDuration: Duration(milliseconds: 600),
                 transitionsBuilder:
                     (_, Animation<double> animation, __, Widget child) {

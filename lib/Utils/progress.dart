@@ -7,11 +7,11 @@ class ProgressDisplay {
 
   ProgressDisplay(BuildContext context) {
     this.context = context;
-    pr = new ProgressDialog(context, ProgressDialogType.Normal);
+    pr = new ProgressDialog(context);
   }
 
   void displayDialog(String text) {
-    pr.setMessage(text);
+    pr.style(message: text);// .setMessage(text);
     pr.show();
   }
 

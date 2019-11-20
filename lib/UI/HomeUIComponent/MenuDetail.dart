@@ -9,14 +9,15 @@ import 'package:treva_shop_flutter/UI/HomeUIComponent/PromotionDetail.dart';
 import 'package:treva_shop_flutter/UI/HomeUIComponent/Search.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:treva_shop_flutter/Utils/backgroud_utils.dart';
+import 'package:treva_shop_flutter/Utils/colors.dart';
 import 'package:treva_shop_flutter/Utils/general.dart';
 import 'package:treva_shop_flutter/Library/carousel_pro/carousel_pro.dart';
 
 class menuDetail extends StatefulWidget {
 
   List<Products> products;
-  String menu_id, menu_name;
-  menuDetail(this.products, this.menu_id, this.menu_name);
+  String menu_id, menu_name, menu_image;
+  menuDetail(this.products, this.menu_id, this.menu_name, this.menu_image);
 
   @override
   _menuDetailState createState() => _menuDetailState();
@@ -53,7 +54,7 @@ class _menuDetailState extends State<menuDetail> {
   /// Custom Text Blue Color
   static var _customTextStyleBlue = TextStyle(
       fontFamily: "Gotik",
-      color: Color(0xFF6991C7),
+      color: Color(MyColors.primary_color),
       fontWeight: FontWeight.w700,
       fontSize: 15.0);
 
@@ -63,13 +64,13 @@ class _menuDetailState extends State<menuDetail> {
   ///
   @override
   void initState() {
-    imageNetwork.resolve(ImageConfiguration()).addListener((_,__){
+    imageNetwork.resolve(new ImageConfiguration()).addListener(new ImageStreamListener((ImageInfo image, bool synchronousCall) { /*...*/
       if(mounted){
         setState(() {
-          loadImage=false;
+          loadImage = false;
         });
       }
-    });
+    }));
     // TODO: implement initState
     super.initState();
     getAllSubCategories();
@@ -104,6 +105,7 @@ class _menuDetailState extends State<menuDetail> {
       products = new Utils().getRelatedProducts(pro, sub_category_id);
     });
     new Timer(Duration(milliseconds: 500), (){
+      if(!mounted) return;
       setState(() {
         products = new Utils().getRelatedProducts(pro, sub_category_id);
         start = true;
@@ -248,10 +250,10 @@ class _menuDetailState extends State<menuDetail> {
           overlayShadowColors: Colors.white.withOpacity(0.9),
           overlayShadowSize: 0.9,
           images: [
-            AssetImage("assets/img/bannerMan1.png"),
-            AssetImage("assets/img/bannerMan2.png"),
-            AssetImage("assets/img/bannerMan3.png"),
-            AssetImage("assets/img/bannerMan4.png"),
+            NetworkImage(widget.menu_image),
+//            AssetImage("assets/img/bannerMan2.png"),
+//            AssetImage("assets/img/bannerMan3.png"),
+//            AssetImage("assets/img/bannerMan4.png"),
           ],
         ),
       ),
@@ -467,7 +469,7 @@ class _menuDetailState extends State<menuDetail> {
             },
             child: IconButton(
               onPressed: null,
-              icon: Icon(Icons.search, color: Color(0xFF6991C7)),
+              icon: Icon(Icons.search, color: Color(MyColors.primary_color)),
             ),
           ),
         ],
@@ -481,7 +483,7 @@ class _menuDetailState extends State<menuDetail> {
               fontFamily: "Gotik"),
         ),
         iconTheme: IconThemeData(
-          color: Color(0xFF6991C7),
+          color: Color(MyColors.primary_color),
         ),
         elevation: 0.0,
       ),
@@ -609,7 +611,7 @@ class menuItemCard extends StatelessWidget {
                           height: 25.5,
                           width: 55.0,
                           decoration: BoxDecoration(
-                              color: Color(0xFFD7124A),
+                              color: Color(MyColors.primary_color),
                               borderRadius: BorderRadius.only(
                                   bottomRight: Radius.circular(20.0),
                                   topLeft: Radius.circular(5.0))),
@@ -747,7 +749,7 @@ class loadingMenuItemCard extends StatelessWidget {
                             height: 25.5,
                             width: 65.0,
                             decoration: BoxDecoration(
-                                color: Color(0xFFD7124A),
+                                color: Color(MyColors.primary_color),
                                 borderRadius: BorderRadius.only(
                                     bottomRight: Radius.circular(20.0),
                                     topLeft: Radius.circular(5.0))),

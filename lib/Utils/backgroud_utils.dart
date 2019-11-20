@@ -15,7 +15,7 @@ class Utils {
 
   void getUserIpDetails() {
     StorageSystem ss = new StorageSystem();
-    http.get('http://ip-api.com/json').then((res) { //https://ipapi.co/json
+    http.get('http://ip-api.com/json').then((res) async { //https://ipapi.co/json
       if (res.body.isNotEmpty) {
         dynamic r = json.decode(res.body);
         country = r['country'];//country_name
@@ -25,7 +25,7 @@ class Utils {
             .collection('currency')
             .where('country', isEqualTo: country)
             .getDocuments()
-            .then((query) {
+            .then((query) async {
           if (query.documents.length > 0) {
             Map<String, dynamic> curr = query.documents[0].data;
             exchange_rate = (curr['exchange_rate'] == 1)
@@ -40,25 +40,33 @@ class Utils {
             ss.setPrefItem('currency', jsonEncode(dataSave));
             //ss.disposePref();
           }else {
+            dynamic curr = await getCurrencyForUnKnownCountries();
             Map<String, dynamic> dataSave = new Map();
             dataSave['currency'] = '\$';
             dataSave['currency_name'] = 'USD';
             dataSave['country'] = country;
-            dataSave['exchange_rate'] = 365.0;
+            dataSave['exchange_rate'] = curr['exchange_rate'];//365.0;
             ss.setPrefItem('currency', jsonEncode(dataSave));
           }
         });
       }else {
+        dynamic curr = await getCurrencyForUnKnownCountries();
         Map<String, dynamic> dataSave = new Map();
         dataSave['currency'] = '\$';
         dataSave['currency_name'] = 'USD';
         dataSave['country'] = country;
-        dataSave['exchange_rate'] = 365.0;
+        dataSave['exchange_rate'] = curr['exchange_rate'];//365.0;
         ss.setPrefItem('currency', jsonEncode(dataSave));
       }
     });
   }
 
+  Future<dynamic> getCurrencyForUnKnownCountries() async {
+    DocumentSnapshot ref = await Firestore.instance.collection('db').document('tacadmin').collection('currency').document('-LhzMHbxXOyF-jwOYyGF').get();
+    return ref.data;
+  }
+
+  //List all products
   Future<List<Products>> getProducts() async {
     StorageSystem ss = new StorageSystem();
     var result = await http.get(
@@ -119,6 +127,71 @@ class Utils {
     return finalProducts;
   }
 
+  //List al products by category id
+  Future<List<Products>> getProductsByCategoryID(String sub_cat_id) async {
+//    var result = await http.get(
+//        'https://us-central1-taconlinegiftshop.cloudfunctions.net/get_all_products?action=get',
+//        headers: {'Authorization': 'api ATCNoQUGOoEvTwqWigCR'});
+//
+//    List<dynamic> listPro = json.decode(result.body);
+
+    List<Products> listPro = await getProducts();
+
+    List<Products> finalProducts = new List();
+
+    listPro.forEach((product) async {
+
+      final reviews = await getReviews(product.key);
+
+      double total_rating = 0;
+
+      if(reviews.isNotEmpty){
+        double tr = 0;
+        reviews.forEach((rev){
+          tr += rev.rating;
+        });
+        total_rating = tr / reviews.length;
+      }
+
+      List<String> categories = "${product.category}".split(',');
+
+      if(categories.contains(sub_cat_id)) {
+        Products p = new Products(
+            id: product.id,
+            key: product.key,
+            name: product.name,
+            price: product.price,
+            salePrice: product.salePrice,
+            discount: product.discount,
+            pictures: product.pictures,
+            shortDetails: product.shortDetails,
+            description: product.description,
+            stock: product.stock,
+            is_new: product.is_new,
+            sale: product.sale,
+            category: product.category,
+            colors: product.colors,
+            size: product.size,
+            tags: product.tags,
+            variants: product.variants,
+            items: product.items,
+            scheduled_sales_period: product.scheduled_sales_period,
+            weight: product.weight,
+            created_date: product.created_date,
+            modified_date: product.modified_date,
+            created_by: product.created_by,
+            dynamic_link: product.dynamic_link,
+            menu_link: product.menu_link,
+            deleted: product.deleted,
+            ratingTotal: reviews.length,
+            ratingValue: total_rating);
+        finalProducts.add(p);
+      }
+    });
+    return finalProducts;
+  }
+
+  //Get all categories
   Future<List<Category>> getCategories() async {
     var query = await Firestore.instance
         .collection('db')
@@ -151,6 +224,7 @@ class Utils {
     return category;
   }
 
+  //Get all reviews
   Future<List<Reviews>> getReviews(String key) async {
     var query = await Firestore.instance
         .collection('reviews')
@@ -177,6 +251,7 @@ class Utils {
     return reviews;
   }
 
+  //Get products stored locally on device
   List<Products> getLocalProducts(){
     StorageSystem ss = new StorageSystem();
     String getP = ss.getItem('all_products');
@@ -232,6 +307,7 @@ class Utils {
     return finalProducts;
   }
 
+  //Get products similar with the current product using categories to compare
   List<Products> getRelatedProducts(List<Products> all_products, String current_product_category) {
     List<Products> related = new List();
 
@@ -244,7 +320,7 @@ class Utils {
     all_products.forEach((pro){
       List<String> curr_cat_split = current_product_category.split(',');
       List<String> pro_cat_split = pro.category.split(',');
-      if(pro.category.contains(current_product_category)){
+      if(pro_cat_split.contains(current_product_category)){
         related.add(pro);
       }
 //      print('added = ${related.length}');
@@ -262,6 +338,7 @@ class Utils {
     return related;
   }
 
+  //Get sub-categories by main-category id
   Future<List<Category>> getSubCategoriesFromMainCategoryID(String main_category_id) async{
 
     var query = await Firestore.instance

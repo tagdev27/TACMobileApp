@@ -10,6 +10,7 @@ import 'package:treva_shop_flutter/UI/HomeUIComponent/ChatItem.dart';
 import 'package:treva_shop_flutter/UI/CartUIComponent/Delivery.dart';
 import 'package:treva_shop_flutter/UI/HomeUIComponent/PromotionDetail.dart';
 import 'package:treva_shop_flutter/Utils/backgroud_utils.dart';
+import 'package:treva_shop_flutter/Utils/colors.dart';
 import 'package:treva_shop_flutter/Utils/general.dart';
 
 class flashSaleDetail extends StatefulWidget {
@@ -165,7 +166,7 @@ class _flashSaleDetailState extends State<flashSaleDetail> {
                   child: Text(
                     "See More",
                     style: TextStyle(
-                        color: Colors.indigoAccent.withOpacity(0.8),
+                        color: Colors.pinkAccent.withOpacity(0.8),
                         fontFamily: "Gotik",
                         fontWeight: FontWeight.w700),
                   ),
@@ -207,7 +208,7 @@ class _flashSaleDetailState extends State<flashSaleDetail> {
                 )),
                 CircleAvatar(
                   radius: 10.0,
-                  backgroundColor: Colors.red,
+                  backgroundColor: Color(MyColors.primary_color),
                   child: Text(
                     valueItemChart.toString(),
                     style: TextStyle(color: Colors.white, fontSize: 13.0),
@@ -262,7 +263,7 @@ class _flashSaleDetailState extends State<flashSaleDetail> {
                   Container(
                     height: 50.0,
                     width: 1000.0,
-                    color: Colors.redAccent,
+                    color: Colors.pinkAccent,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
@@ -324,7 +325,7 @@ class _flashSaleDetailState extends State<flashSaleDetail> {
                           Text(
                             new GeneralUtils().currencyFormattedMoney(itemSale.salePrice),
                             style: _customTextStyle.copyWith(
-                                color: Colors.redAccent, fontSize: 20.0),
+                                color: Colors.pinkAccent, fontSize: 20.0),
                           ),
                           Padding(padding: EdgeInsets.only(top: 10.0)),
                           Divider(
@@ -468,7 +469,7 @@ class _flashSaleDetailState extends State<flashSaleDetail> {
                                 child: Text(
                                   "View More",
                                   style: TextStyle(
-                                    color: Colors.indigoAccent,
+                                    color: Colors.pinkAccent,
                                     fontSize: 15.0,
                                     fontFamily: "Gotik",
                                     fontWeight: FontWeight.w700,
@@ -557,7 +558,7 @@ class _flashSaleDetailState extends State<flashSaleDetail> {
                         height: 45.0,
                         width: 200.0,
                         decoration: BoxDecoration(
-                          color: Colors.indigoAccent,
+                          color: Colors.pinkAccent,
                         ),
                         child: Center(
                           child: Text(

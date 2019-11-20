@@ -186,10 +186,10 @@ class EmailService {
   style="height:20px;line-height:14px;font-size:12px">
   &nbsp;</div>
 
-  <a href="https://tacgifts.com/pages/login"
+  <a href="https://tacgifts.com/login"
   style="display:block;font-family:"Source Sans Pro",Verdana,Tahoma,Geneva,sans-serif;color:#ff9800;font-size:15px;line-height:18px;text-decoration:none;white-space:nowrap;text-transform:uppercase"
   target="_blank"
-  data-saferedirecturl="https://www.google.com/url?q=https://tacgifts.com/pages/login">
+  data-saferedirecturl="https://www.google.com/url?q=https://tacgifts.com/login">
 
   <font face=""Source Sans Pro", sans-serif"
   color="#ff9800"
@@ -365,10 +365,10 @@ class EmailService {
   style="height:20px;line-height:14px;font-size:12px">
   &nbsp;</div>
 
-  <a href="https://tacgifts.com/home/left-sidebar/collection/all"
+  <a href="https://tacgifts.com/home/collection/all"
   style="display:block;font-family:"Source Sans Pro",Verdana,Tahoma,Geneva,sans-serif;color:#ff9800;font-size:15px;line-height:18px;text-decoration:none;white-space:nowrap;text-transform:uppercase"
   target="_blank"
-  data-saferedirecturl="https://www.google.com/url?q=https://tacgifts.com/left-sidebar/collection/all">
+  data-saferedirecturl="https://www.google.com/url?q=https://tacgifts.com/collection/all">
 
   <font face=""Source Sans Pro", sans-serif"
   color="#ff9800"
@@ -467,10 +467,10 @@ class EmailService {
   style="height:20px;line-height:14px;font-size:12px">
   &nbsp;</div>
 
-  <a href="https://tacgifts.com/pages/social-tree"
+  <a href="https://tacgifts.com/social-tree"
   style="display:block;font-family:"Source Sans Pro",Verdana,Tahoma,Geneva,sans-serif;color:#ff9800;font-size:15px;line-height:18px;text-decoration:none;white-space:nowrap;text-transform:uppercase"
   target="_blank"
-  data-saferedirecturl="https://www.google.com/url?q=https://tacgifts.com/pages/social-tree">
+  data-saferedirecturl="https://www.google.com/url?q=https://tacgifts.com/social-tree">
 
   <font face=""Source Sans Pro", sans-serif"
   color="#ff9800"
@@ -677,10 +677,10 @@ class EmailService {
 
   <td align="center" valign="top" width="23%">
 
-  <a href="https://tacgifts.com/pages/dashboard"
+  <a href="https://tacgifts.com/dashboard"
   style="font-family:"Source Sans Pro",Arial,Tahoma,Geneva,sans-serif;color:#1a1a1a;font-size:14px;line-height:20px;text-decoration:none;white-space:nowrap;font-weight:bold"
   target="_blank"
-  data-saferedirecturl="https://www.google.com/url?q=https://tacgifts.com/pages/dashboard">
+  data-saferedirecturl="https://www.google.com/url?q=https://tacgifts.com/dashboard">
 
   <font
   face=""Source Sans Pro", sans-serif"
@@ -711,7 +711,7 @@ class EmailService {
 
   <span
   style="font-family:"Source Sans Pro",Arial,Tahoma,Geneva,sans-serif;color:#868686;font-size:17px;line-height:20px">
-  © 2019 TAC - Online Messenger Gifts.
+  © TAC - Online Messenger Gifts.
   All&nbsp;Rights&nbsp;Reserved.
   We&nbsp;appreciate&nbsp;you!</span>
 
@@ -735,7 +735,7 @@ class EmailService {
   style="font-family:"Source Sans Pro",Arial,Tahoma,Geneva,sans-serif;color:#1a1a1a;font-size:17px;line-height:20px;text-decoration:none"
   target="_blank"
   data-saferedirecturl="#">+234
-  8142630028</a></span>
+  7067117723</a></span>
 
   </font>
 
@@ -1032,7 +1032,7 @@ class EmailService {
   product shipping, payment and other
   technical support issues, please contact <span
   class="il">TAC</span> on
-  +2348142630028 or <a
+  +2347067117723 or <a
   href="mailto:support@tacgifts.com"
   style="text-decoration:none!important;text-decoration:none;color:#0064c8"
   target="_blank">support@<span
