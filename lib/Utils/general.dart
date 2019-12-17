@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_money_formatter/flutter_money_formatter.dart';
 import 'package:treva_shop_flutter/ListItem/GiftBaskets.dart';
 import 'package:treva_shop_flutter/Utils/backgroud_utils.dart';
+import 'package:treva_shop_flutter/Utils/colors.dart';
 import 'package:treva_shop_flutter/Utils/storage.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class GeneralUtils {
   StorageSystem ss;
@@ -200,6 +202,18 @@ class GeneralUtils {
           ],
         );
       },
+    );
+  }
+
+  void showToast(String msg) {
+    Fluttertoast.showToast(
+        msg: "$msg",
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.CENTER,
+        timeInSecForIos: 5,
+        backgroundColor: Color(MyColors.primary_color),
+        textColor: Colors.white,
+        fontSize: 16.0
     );
   }
 }

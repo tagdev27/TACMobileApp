@@ -96,6 +96,7 @@ class _MenuState extends State<Menu> with TickerProviderStateMixin {
     super.initState();
     //getMainCategories();
     getBanners();
+    getMainCategories();
     startOperations();
   }
   
@@ -398,41 +399,43 @@ class _MenuState extends State<Menu> with TickerProviderStateMixin {
     }
 
     /// CategoryIcon Component
-    var categoryIcon = Container(
-      color: Colors.white,
-      padding: EdgeInsets.only(top: 20.0),
-      alignment: AlignmentDirectional.centerStart,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: <Widget>[
-          Padding(
-            padding: EdgeInsets.only(left: 20.0, top: 0.0),
-            child: Text(
-              "Menu",
-              style: TextStyle(
-                  fontSize: 13.5,
-                  fontFamily: "Sans",
-                  fontWeight: FontWeight.w700),
+    Widget categoryIcon() {
+      return Container(
+        color: Colors.white,
+        padding: EdgeInsets.only(top: 20.0),
+        alignment: AlignmentDirectional.centerStart,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Padding(
+                  padding: EdgeInsets.only(left: 20.0, top: 0.0),
+                  child: Text(
+                    "Menu",
+                    style: TextStyle(
+                        fontSize: 13.5,
+                        fontFamily: "Sans",
+                        fontWeight: FontWeight.w700),
+                  ),
+                ),
+                Padding(
+                    padding: const EdgeInsets.only(left: 0.0, top: 0.0),
+                    child: FlatButton(onPressed: () {
+                      Navigator.push(context, PageRouteBuilder(
+                          pageBuilder: (_, __, ___) =>
+                          new MoreMenu(products, menus)));
+                    }, child: Text(
+                      "See More",
+                      style: _customTextStyleBlue,
+                    ))
+                ),
+              ],
             ),
-          ),
-          Padding(
-              padding: const EdgeInsets.only(left: 0.0, top: 0.0),
-              child: FlatButton(onPressed: (){
-                Navigator.push(context, PageRouteBuilder(
-                    pageBuilder: (_, __, ___) => new MoreMenu(products)));
-              }, child: Text(
-                "See More",
-                style: _customTextStyleBlue,
-              ))
-          ),
-        ],
-      ),
-          Padding(padding: EdgeInsets.only(top: 0.0)),
-          //loadMenu(),
-          /// Get class CategoryIconValue
+            Padding(padding: EdgeInsets.only(top: 0.0)),
+            //loadMenu(),
+            /// Get class CategoryIconValue
 //          CategoryIconValue(
 //            tap1: (){
 //              _onClickMenuIcon(getMainCategoryByIndex(0).id, getMainCategoryByIndex(0).name, getMainCategoryByIndex(0).icon);
@@ -492,34 +495,49 @@ class _MenuState extends State<Menu> with TickerProviderStateMixin {
 //            title4: getMainCategoryByIndex(7).name,
 //            id4: getMainCategoryByIndex(7).id,
 //          ),
-          Padding(padding: EdgeInsets.only(top: 23.0)),
-          CategoryIconValue(
-            products: products,
-            id1: "-LnPVStbmzq8incIRg7T",
-            icon1: "https://firebasestorage.googleapis.com/v0/b/taconlinegiftshop.appspot.com/o/main-category%2Fgift_1.jpg?alt=media&token=379b5f16-b804-4408-a2c0-5d3956127652",
-            //tap1: _onClickMenuIcon("-LnPVStbmzq8incIRg7T", "Anniversary", "https://firebasestorage.googleapis.com/v0/b/taconlinegiftshop.appspot.com/o/main-category%2Fgift_1.jpg?alt=media&token=379b5f16-b804-4408-a2c0-5d3956127652"),
-            title1: "Anniversary",
+            Padding(padding: EdgeInsets.only(top: 23.0)),
+            CategoryIconValue(
+              products: products,
+              id1: (menus[0] != null) ? menus[0].id : '',
+              id2: (menus[1] != null) ? menus[1].id : '',
+              id3: (menus[2] != null) ? menus[2].id : '',
+              id4: (menus[3] != null) ? menus[3].id : '',
 
-            id2: "-LnPVYrVP8qr7kECXBjJ",
-            icon2: "https://firebasestorage.googleapis.com/v0/b/taconlinegiftshop.appspot.com/o/main-category%2Fgift_2.jpg?alt=media&token=0b8a61bc-959c-4a66-ad5f-f06b2c0a5111",
-            //tap2: _onClickMenuIcon("-LnPVYrVP8qr7kECXBjJ", "Birthday", "https://firebasestorage.googleapis.com/v0/b/taconlinegiftshop.appspot.com/o/main-category%2Fgift_2.jpg?alt=media&token=0b8a61bc-959c-4a66-ad5f-f06b2c0a5111"),
-            title2: "Birthday",
+              icon1: (menus[0] != null) ? menus[0].icon : '',
+              icon2: (menus[1] != null) ? menus[1].icon : '',
+              icon3: (menus[2] != null) ? menus[2].icon : '',
+              icon4: (menus[3] != null) ? menus[3].icon : '',
 
-            id3: "-LnPVdiwGifhYCS7yyBY",
-            icon3: "https://firebasestorage.googleapis.com/v0/b/taconlinegiftshop.appspot.com/o/main-category%2Fgift_3.jpg?alt=media&token=6aa1e22a-c25c-4d0e-9f2e-d094af3c30ac",
-            //tap3: _onClickMenuIcon("-LnPVdiwGifhYCS7yyBY", "Wine Gifts", "https://firebasestorage.googleapis.com/v0/b/taconlinegiftshop.appspot.com/o/main-category%2Fgift_3.jpg?alt=media&token=6aa1e22a-c25c-4d0e-9f2e-d094af3c30ac"),
-            title3: "Wine Gifts",
+              title1: (menus[0] != null) ? menus[0].name : '',
+              title2: (menus[1] != null) ? menus[1].name : '',
+              title3: (menus[2] != null) ? menus[2].name : '',
+              title4: (menus[3] != null) ? menus[3].name : '',
+//            id1: "-LnPVStbmzq8incIRg7T",
+//            icon1: "https://firebasestorage.googleapis.com/v0/b/taconlinegiftshop.appspot.com/o/main-category%2Fgift_1.jpg?alt=media&token=379b5f16-b804-4408-a2c0-5d3956127652",
+//            //tap1: _onClickMenuIcon("-LnPVStbmzq8incIRg7T", "Anniversary", "https://firebasestorage.googleapis.com/v0/b/taconlinegiftshop.appspot.com/o/main-category%2Fgift_1.jpg?alt=media&token=379b5f16-b804-4408-a2c0-5d3956127652"),
+//            title1: "Anniversary",
+//
+//            id2: "-LnPVYrVP8qr7kECXBjJ",
+//            icon2: "https://firebasestorage.googleapis.com/v0/b/taconlinegiftshop.appspot.com/o/main-category%2Fgift_2.jpg?alt=media&token=0b8a61bc-959c-4a66-ad5f-f06b2c0a5111",
+//            //tap2: _onClickMenuIcon("-LnPVYrVP8qr7kECXBjJ", "Birthday", "https://firebasestorage.googleapis.com/v0/b/taconlinegiftshop.appspot.com/o/main-category%2Fgift_2.jpg?alt=media&token=0b8a61bc-959c-4a66-ad5f-f06b2c0a5111"),
+//            title2: "Birthday",
+//
+//            id3: "-LnPW-rPY2XGgtqShBCI",
+//            icon3: "https://firebasestorage.googleapis.com/v0/b/taconlinegiftshop.appspot.com/o/main-category%2Fgift_5.jpg?alt=media&token=2f82fd60-5779-4308-bbb0-d5d6ff3207d5",
+//            //tap3: _onClickMenuIcon("-LnPVdiwGifhYCS7yyBY", "Wine Gifts", "https://firebasestorage.googleapis.com/v0/b/taconlinegiftshop.appspot.com/o/main-category%2Fgift_3.jpg?alt=media&token=6aa1e22a-c25c-4d0e-9f2e-d094af3c30ac"),
+//            title3: "Cooporate",
+//
+//            id4: "-LnPWEEYGFLc56K_YdMR",
+//            icon4: "https://firebasestorage.googleapis.com/v0/b/taconlinegiftshop.appspot.com/o/main-category%2Fgift_20.jpg?alt=media&token=0bae1bbc-a5d7-4a11-bb2a-5a0d5c2ba57b",
+//            //tap4: _onClickMenuIcon("-LnPVtl0WavW-1rWeZUd", "Congratulations", "https://firebasestorage.googleapis.com/v0/b/taconlinegiftshop.appspot.com/o/main-category%2Fgift_6.jpg?alt=media&token=e5671331-2706-42f9-a2d9-121dacab335e"),
+//            title4: "Specials",
+            ),
 
-            id4: "-LnPVtl0WavW-1rWeZUd",
-            icon4: "https://firebasestorage.googleapis.com/v0/b/taconlinegiftshop.appspot.com/o/main-category%2Fgift_6.jpg?alt=media&token=e5671331-2706-42f9-a2d9-121dacab335e",
-            //tap4: _onClickMenuIcon("-LnPVtl0WavW-1rWeZUd", "Congratulations", "https://firebasestorage.googleapis.com/v0/b/taconlinegiftshop.appspot.com/o/main-category%2Fgift_6.jpg?alt=media&token=e5671331-2706-42f9-a2d9-121dacab335e"),
-            title4: "Congratulations",
-          ),
-
-          Padding(padding: EdgeInsets.only(bottom: 30.0))
-        ],
-      ),
-    );
+            Padding(padding: EdgeInsets.only(bottom: 30.0))
+          ],
+        ),
+      );
+    }
 
     // ListView a WeekPromotion Component dynamic data
     List<Widget> getPromoHorizontalList() {
@@ -659,6 +677,7 @@ class _MenuState extends State<Menu> with TickerProviderStateMixin {
         String salePrice =
             new GeneralUtils().currencyFormattedMoney(pro.salePrice);
         flash_sell.add(flashSaleItem(
+          banners['parallax_banner_image'],
           price: salePrice,
           saleP: price,
           flashItem: pro,
@@ -848,7 +867,7 @@ class _MenuState extends State<Menu> with TickerProviderStateMixin {
                 (banners.isEmpty) ? Text('') : imageSlider,
 
                 /// Call var categoryIcon
-                categoryIcon,
+                (menus.length > 0) ? categoryIcon() : Text(''),
                 Padding(
                   padding: EdgeInsets.only(top: 10.0),
                 ),
@@ -1054,10 +1073,12 @@ class flashSaleItem extends StatelessWidget {
   final int colorLine;
   final double widthLine;
   final List<Products> salesList;
+  final String banner_head;
 
   final Products flashItem;
 
   flashSaleItem(
+      this.banner_head,
       {this.price,
       this.saleP,
       this.flashItem,
@@ -1077,7 +1098,7 @@ class flashSaleItem extends StatelessWidget {
             InkWell(
               onTap: () {
                 Navigator.push(context, PageRouteBuilder(
-                    pageBuilder: (_, __, ___) => new flashSale(place, salesProductsWithSchedule: salesList,),
+                    pageBuilder: (_, __, ___) => new flashSale(place, banner_head, salesProductsWithSchedule: salesList,),
                     transitionsBuilder:
                         (_, Animation<double> animation, __, Widget child) {
                       return Opacity(
@@ -1486,6 +1507,9 @@ class CategoryIconValue extends StatelessWidget {
       children: <Widget>[
         InkWell(
           onTap: (){
+            if(id1.isEmpty){
+              return;
+            }
               Navigator.push(context, PageRouteBuilder(
                   pageBuilder: (_, __, ___) => new menuDetail(products, id1, title1, icon1),
                   transitionDuration: Duration(milliseconds: 750),
@@ -1519,6 +1543,9 @@ class CategoryIconValue extends StatelessWidget {
         ),
         InkWell(
           onTap: (){
+            if(id2.isEmpty){
+              return;
+            }
             Navigator.push(context, PageRouteBuilder(
                 pageBuilder: (_, __, ___) => new menuDetail(products, id2, title2, icon2),
                 transitionDuration: Duration(milliseconds: 750),
@@ -1552,6 +1579,9 @@ class CategoryIconValue extends StatelessWidget {
         ),
         InkWell(
           onTap: (){
+            if(id3.isEmpty){
+              return;
+            }
             Navigator.push(context, PageRouteBuilder(
                 pageBuilder: (_, __, ___) => new menuDetail(products, id3, title3, icon3),
                 transitionDuration: Duration(milliseconds: 750),
@@ -1585,6 +1615,9 @@ class CategoryIconValue extends StatelessWidget {
         ),
         InkWell(
           onTap: (){
+            if(id4.isEmpty){
+              return;
+            }
             Navigator.push(context, PageRouteBuilder(
                 pageBuilder: (_, __, ___) => new menuDetail(products, id4, title4, icon4),
                 transitionDuration: Duration(milliseconds: 750),

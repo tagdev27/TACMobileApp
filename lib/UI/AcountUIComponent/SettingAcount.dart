@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_facebook_login/flutter_facebook_login.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:treva_shop_flutter/UI/BottomNavigationBar.dart';
 import 'package:treva_shop_flutter/Utils/colors.dart';
@@ -79,7 +81,7 @@ class _settingAcountState extends State<settingAcount> {
     return Scaffold(
         appBar: AppBar(
           title: Text(
-            "Setting Acount",
+            "Account Settings",
             style: TextStyle(
                 fontWeight: FontWeight.w700,
                 fontSize: 18.0,
@@ -325,7 +327,7 @@ class _settingAcountState extends State<settingAcount> {
             controller: _controller,
             keyboardType: (isText)
                 ? TextInputType.text
-                : (isPhone) ? TextInputType.phone : TextInputType.datetime,
+                : (isPhone) ? TextInputType.phone : TextInputType.text,//datetime
             decoration: InputDecoration(
                 hintText: (isDate) ? "MM/DD/YYYY" : "Enter your $title",
                 border: InputBorder.none,
@@ -413,6 +415,11 @@ class _settingAcountState extends State<settingAcount> {
                   String val = _controller.text;
                   List<String> vals = _controller.text.split('/');
                   if(!val.contains('/') || vals.length != 3) {
+                    new GeneralUtils().neverSatisfied(
+                        context, 'Error', 'Date of Birth is in incorrect format.');
+                    return;
+                  }
+                  if(vals[0].length != 2 || vals[1].length != 2 || vals[2].length != 4){
                     new GeneralUtils().neverSatisfied(
                         context, 'Error', 'Date of Birth is in incorrect format.');
                     return;
@@ -528,6 +535,16 @@ class _settingAcountState extends State<settingAcount> {
   Future<void> afterLogout() async {
     try {
       await FirebaseAuth.instance.signOut();
+      final GoogleSignIn _googleSignIn = GoogleSignIn(
+        scopes: [
+          'email',
+          'profile',
+          'https://www.googleapis.com/auth/calendar.events.readonly',
+        ],
+      );
+      await _googleSignIn.signOut();//final GoogleSignInAccount googleUser =
+      final facebookLogin = FacebookLogin();
+      await facebookLogin.logOut();
       await FirebaseAuth.instance.signInAnonymously();
       setState(() {
         _inAsyncCall = false;

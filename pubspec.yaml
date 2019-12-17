@@ -45,6 +45,13 @@ dependencies:
   url_launcher: ^5.2.5
   image_picker: ^0.6.2
   image_editor: ^0.1.4
+  flutter_svg: ^0.14.2
+  fluttertoast: ^3.1.3
+  #datetime_picker_formfield: ^0.4.3
+  #tutorial_coach_mark: ^0.3.0
+  #flutter_signin_button: ^1.0.0
+  #flutter_brand_icons: ^1.1.0
+  #font_awesome_flutter: ^8.5.0
 #  flutter_freshchat: ^1.1.7
 #  flutter_freshchat:
 #    path: lib/Library/flutter_freshchat
@@ -96,7 +103,7 @@ flutter:
   assets:
     - assets/img/google.png
     - assets/img/googlewallet.png
-    - assets/img/credit.png
+#    - assets/img/credit.png
     - assets/img/handshake.png
     - assets/img/paypal.png
     - assets/img/icon_facebook.png
@@ -111,11 +118,11 @@ flutter:
     - assets/img/search2.png
     - assets/img/chat.png
     - assets/img/notifications-button.png
-    - assets/img/baner1.png
-    - assets/img/baner2.png
-    - assets/img/baner3.png
-    - assets/img/baner4.png
-    - assets/img/baner12.png
+#    - assets/img/baner1.png
+#    - assets/img/baner2.png
+#    - assets/img/baner3.png
+#    - assets/img/baner4.png
+#    - assets/img/baner12.png
     - assets/icon/book.png
     - assets/icon/camera.png
     - assets/icon/fashion.png
@@ -128,42 +135,43 @@ flutter:
     - assets/icon/pc.png
     - assets/icon/sport.png
     - assets/icon/ticket.png
-    - assets/imgPromo/Discount1.png
-    - assets/imgPromo/Discount2.png
-    - assets/imgPromo/Discount3.png
-    - assets/imgPromo/Discount4.png
-    - assets/imgPromo/Discount5.png
-    - assets/imgPromo/Discount6.png
+#    - assets/imgPromo/Discount1.png
+#    - assets/imgPromo/Discount2.png
+#    - assets/imgPromo/Discount3.png
+#    - assets/imgPromo/Discount4.png
+#    - assets/imgPromo/Discount5.png
+#    - assets/imgPromo/Discount6.png
+    - assets/imgPromo/social-tree-hero.png
     - assets/img/flashsaleicon.png
-    - assets/imgItem/mackbook.jpg
-    - assets/imgItem/fashion1.jpg
-    - assets/imgItem/flashsale2.jpg
-    - assets/imgItem/flashsale3.jpg
-    - assets/imgItem/flashsale4.jpg
-    - assets/imgItem/flashsale5.jpg
-    - assets/imgItem/category1.png
-    - assets/imgItem/category2.png
-    - assets/imgItem/category3.png
-    - assets/imgItem/category4.png
-    - assets/imgItem/category5.png
-    - assets/imgItem/category6.png
-    - assets/imgItem/category7.png
-    - assets/imgItem/category8.png
-    - assets/imgItem/acesoris1.jpg
-    - assets/imgItem/beauty1.jpg
-    - assets/imgItem/girl1.jpg
-    - assets/imgItem/kids1.jpg
-    - assets/imgItem/man1.jpg
-    - assets/imgItem/shoes1.jpg
-    - assets/imgItem/shoes2.jpg
+#    - assets/imgItem/mackbook.jpg
+#    - assets/imgItem/fashion1.jpg
+#    - assets/imgItem/flashsale2.jpg
+#    - assets/imgItem/flashsale3.jpg
+#    - assets/imgItem/flashsale4.jpg
+#    - assets/imgItem/flashsale5.jpg
+#    - assets/imgItem/category1.png
+#    - assets/imgItem/category2.png
+#    - assets/imgItem/category3.png
+#    - assets/imgItem/category4.png
+#    - assets/imgItem/category5.png
+#    - assets/imgItem/category6.png
+#    - assets/imgItem/category7.png
+#    - assets/imgItem/category8.png
+#    - assets/imgItem/acesoris1.jpg
+#    - assets/imgItem/beauty1.jpg
+#    - assets/imgItem/girl1.jpg
+#    - assets/imgItem/kids1.jpg
+#    - assets/imgItem/man1.jpg
+#    - assets/imgItem/shoes1.jpg
+#    - assets/imgItem/shoes2.jpg
     - assets/img/notmessage.png
     - assets/img/noNotification.png
-    - assets/imgBrand/appleHeader.png
-    - assets/imgBrand/fendiHeader.png
-    - assets/imgBrand/gucciHeader.png
-    - assets/imgBrand/nikeHeader.png
-    - assets/imgBrand/samsungHeader.png
-    - assets/imgBrand/sonyHeader.png
+#    - assets/imgBrand/appleHeader.png
+#    - assets/imgBrand/fendiHeader.png
+#    - assets/imgBrand/gucciHeader.png
+#    - assets/imgBrand/nikeHeader.png
+#    - assets/imgBrand/samsungHeader.png
+#    - assets/imgBrand/sonyHeader.png
     - assets/img/womanface.jpg
     - assets/icon/truck.png
     - assets/icon/chat.png
@@ -173,31 +181,31 @@ flutter:
     - assets/icon/aboutapp.png
     - assets/icon/shopping-cart.png
     - assets/icon/message.png
-    - assets/img/bannerMan1.png
-    - assets/img/bannerMan2.png
-    - assets/img/bannerMan3.png
-    - assets/img/bannerMan4.png
-    - assets/imgCamera/CameraDigital.png
-    - assets/imgCamera/CompactCamera.png
-    - assets/imgCamera/ActionCamera.png
-    - assets/imgCamera/cameraItem1.png
-    - assets/imgCamera/cameraItem2.png
-    - assets/imgCamera/cameraItem3.png
-    - assets/imgCamera/cameraItem4.png
-    - assets/imgPromo/imgPromo1.jpg
-    - assets/imgPromo/imgPromo2.jpg
-    - assets/imgPromo/imgPromo3.jpg
-    - assets/imgPromo/imgPromo4.jpg
-    - assets/imgPromo/imgPromo5.jpg
-    - assets/imgPromo/imgPromo6.jpg
-    - assets/imgPromo/imgPromo7.jpg
-    - assets/imgPromo/imgPromo8.jpg
-    - assets/imgCategoryMan/Man1.jpg
-    - assets/imgCategoryMan/Man2.jpg
-    - assets/imgCategoryMan/Man3.jpg
-    - assets/imgCategoryMan/Man4.jpg
-    - assets/imgCategoryMan/Man5.jpg
-    - assets/imgCategoryMan/Man6.jpg
+#    - assets/img/bannerMan1.png
+#    - assets/img/bannerMan2.png
+#    - assets/img/bannerMan3.png
+#    - assets/img/bannerMan4.png
+#    - assets/imgCamera/CameraDigital.png
+#    - assets/imgCamera/CompactCamera.png
+#    - assets/imgCamera/ActionCamera.png
+#    - assets/imgCamera/cameraItem1.png
+#    - assets/imgCamera/cameraItem2.png
+#    - assets/imgCamera/cameraItem3.png
+#    - assets/imgCamera/cameraItem4.png
+#    - assets/imgPromo/imgPromo1.jpg
+#    - assets/imgPromo/imgPromo2.jpg
+#    - assets/imgPromo/imgPromo3.jpg
+#    - assets/imgPromo/imgPromo4.jpg
+#    - assets/imgPromo/imgPromo5.jpg
+#    - assets/imgPromo/imgPromo6.jpg
+#    - assets/imgPromo/imgPromo7.jpg
+#    - assets/imgPromo/imgPromo8.jpg
+#    - assets/imgCategoryMan/Man1.jpg
+#    - assets/imgCategoryMan/Man2.jpg
+#    - assets/imgCategoryMan/Man3.jpg
+#    - assets/imgCategoryMan/Man4.jpg
+#    - assets/imgCategoryMan/Man5.jpg
+#    - assets/imgCategoryMan/Man6.jpg
     - assets/img/bag.png
     - assets/img/courier.png
     - assets/img/house.png
@@ -206,12 +214,12 @@ flutter:
     - assets/icon/girlcallcenter.png
     - assets/img/checklist.png
     - assets/icon/creditAcount.png
-    - assets/img/creditCardVisa.png
-    - assets/imgBrand/brandNike.jpg
-    - assets/imgBrand/brandApple.jpg
-    - assets/img/flashsalebanner.png
+#    - assets/img/creditCardVisa.png
+#    - assets/imgBrand/brandNike.jpg
+#    - assets/imgBrand/brandApple.jpg
+#    - assets/img/flashsalebanner.png
     - assets/icon/flashSaleIcon.png
-    - assets/img/headerProfile.png
+#    - assets/img/headerProfile.png
     - assets/img/SliderLogin2.png
     - assets/img/SliderLogin3.png
     - assets/img/SliderLogin4.png
@@ -220,13 +228,16 @@ flutter:
     - assets/imgIllustration/IlustrasiOnBoarding1.png
     - assets/imgIllustration/IlustrasiOnBoarding2.png
     - assets/imgIllustration/IlustrasiOnBoarding3.png
-    - assets/avatars/avatar-1.jpg
-    - assets/avatars/avatar-2.jpg
-    - assets/avatars/avatar-3.jpg
-    - assets/avatars/avatar-4.jpg
-    - assets/avatars/avatar-5.jpg
-    - assets/avatars/avatar-6.jpg
+#    - assets/avatars/avatar-1.jpg
+#    - assets/avatars/avatar-2.jpg
+#    - assets/avatars/avatar-3.jpg
+#    - assets/avatars/avatar-4.jpg
+#    - assets/avatars/avatar-5.jpg
+#    - assets/avatars/avatar-6.jpg
     - assets/imgIllustration/IlustrasiCart.png
+    - assets/svg/facebook.svg
+    - assets/svg/twitter.svg
+    - assets/svg/instagram.svg
 
 
   # To add assets to your application, add an assets section, like this:

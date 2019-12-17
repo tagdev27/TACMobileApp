@@ -153,7 +153,7 @@ class _SplashScreenState extends State<SplashScreen> {
                     ),
                     /// Text header "Welcome To" (Click to open code)
                     Text(
-                      "Welcome to",
+                      "",//Welcome to
                       style: TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.w200,
@@ -165,7 +165,7 @@ class _SplashScreenState extends State<SplashScreen> {
                     Hero(
                       tag: "Tac",
                       child: Text(
-                        "TAC - Online \nGift Shop",
+                        "",//TAC - Online \nGift Shop
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontFamily: 'Sans',

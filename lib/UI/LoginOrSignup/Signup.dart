@@ -38,9 +38,7 @@ class _SignupState extends State<Signup> with TickerProviderStateMixin {
 
   String msgId = '';
 
-  String mEmail = '',
-      mPassword = '',
-      fullname = '';
+  String mEmail = '', mPassword = '', fullname = '';
 
   /// Set AnimationController to initState
   @override
@@ -61,9 +59,9 @@ class _SignupState extends State<Signup> with TickerProviderStateMixin {
         const IosNotificationSettings(sound: true, badge: true, alert: true));
     getTokenAndDeviceInfo();
     String cc = ss.getItem('currency');
-      if (cc.isEmpty) {
-        new Utils().getUserIpDetails();
-      }
+    if (cc.isEmpty) {
+      new Utils().getUserIpDetails();
+    }
   }
 
   getTokenAndDeviceInfo() async {
@@ -344,6 +342,7 @@ class _SignupState extends State<Signup> with TickerProviderStateMixin {
       user.sendEmailVerification();
       checkFirestoreAndRedirect(mEmail, null, null, user);
     }).catchError((err) {
+      FirebaseAuth.instance.signOut();
       pd.dismissDialog();
       pd.displayMessage(context, 'Error', '${err.toString()}');
     });
@@ -371,6 +370,12 @@ class _SignupState extends State<Signup> with TickerProviderStateMixin {
       newUserData['lastname'] = googleUser.displayName.split(' ')[1];
       newUserData['userId'] = firebaseUser.uid;
       newUserData['picture'] = googleUser.photoUrl;
+      newUserData['timestamp'] = FieldValue.serverTimestamp();
+      if (firebaseUser.phoneNumber != null) {
+        if (firebaseUser.phoneNumber.isNotEmpty) {
+          newUserData['phone'] = firebaseUser.phoneNumber;
+        }
+      }
       newUserData['msgId'] = msgId;
       Firestore.instance
           .collection('users')
@@ -386,7 +391,7 @@ class _SignupState extends State<Signup> with TickerProviderStateMixin {
         ss.setPrefItem('user', jsonEncode(userData));
         sendEmail(googleUser.displayName.split(' ')[0]);
       });
-    }else {
+    } else {
       Map<String, dynamic> newUserData = new Map();
       String id = FirebaseDatabase.instance.reference().push().key;
       newUserData['id'] = id;
@@ -397,8 +402,10 @@ class _SignupState extends State<Signup> with TickerProviderStateMixin {
       newUserData['firstname'] = fullname.split(' ')[0];
       newUserData['lastname'] = fullname.split(' ')[1];
       newUserData['userId'] = firebaseUser.uid;
-      newUserData['picture'] = 'https://tacadmin.firebaseapp.com/assets/img/default-avatar.png';
+      newUserData['picture'] =
+          'https://tacadmin.firebaseapp.com/assets/img/default-avatar.png';
       newUserData['msgId'] = msgId;
+      newUserData['timestamp'] = FieldValue.serverTimestamp();
       Firestore.instance
           .collection('users')
           .document(email.toLowerCase())
@@ -421,22 +428,31 @@ class _SignupState extends State<Signup> with TickerProviderStateMixin {
     String inner_products = "";
     int index = 2;
 
-    var query = await Firestore.instance.collection('db').document('tacadmin').collection('products').limit(3).getDocuments();
+    var query = await Firestore.instance
+        .collection('db')
+        .document('tacadmin')
+        .collection('products')
+        .limit(3)
+        .getDocuments();
 
-    query.documents.forEach((pro){
-        Map<String, dynamic> p = pro.data;
-        if(index % 2 == 0){//left
-          inner_products += buildHtml(index, true, p);
-        }else {
-          inner_products += buildHtml(index, false, p);
-        }
-        inner_products += """<div style="height:32px;line-height:32px;font-size:30px">&nbsp;</div>""";
-        index = index + 1;
+    query.documents.forEach((pro) {
+      Map<String, dynamic> p = pro.data;
+      if (index % 2 == 0) {
+        //left
+        inner_products += buildHtml(index, true, p);
+      } else {
+        inner_products += buildHtml(index, false, p);
+      }
+      inner_products +=
+          """<div style="height:32px;line-height:32px;font-size:30px">&nbsp;</div>""";
+      index = index + 1;
     });
 
     String email_body = emailService.getRegistrationBody(inner_products);
 
-    http.post("https://avidprintsconcierge.com/emailsending/register.php?sender_email=$mEmail&sender_name=$fullname", body: {'body':email_body}).then((res){
+    http.post(
+        "https://avidprintsconcierge.com/emailsending/register.php?sender_email=$mEmail&sender_name=$fullname",
+        body: {'body': email_body}).then((res) {
       pd.dismissDialog();
       setState(() {
         tap = 1;
@@ -447,11 +463,10 @@ class _SignupState extends State<Signup> with TickerProviderStateMixin {
       _PlayAnimation();
       return tap;
     });
-
   }
 
-  String buildHtml(int index, bool isLeft, Map<String, dynamic> p){
-    if(isLeft){
+  String buildHtml(int index, bool isLeft, Map<String, dynamic> p) {
+    if (isLeft) {
       return """
       <table cellpadding="0" cellspacing="0" border="0" width="88%"
           style="width:100%!important;min-width:100%;max-width:100%;border-width:1px;border-style:solid;border-color:#e8e8e8;border-bottom:none;border-left:none;border-right:none">
@@ -588,7 +603,7 @@ class _SignupState extends State<Signup> with TickerProviderStateMixin {
           </tbody>
       </table>
       """;
-    }else {
+    } else {
       return """
       <table cellpadding="0" cellspacing="0" border="0" width="88%"
                                     style="width:100%!important;min-width:100%;max-width:100%;border-width:1px;border-style:solid;border-color:#e8e8e8;border-bottom:none;border-left:none;border-right:none">
@@ -740,7 +755,7 @@ class _SignupState extends State<Signup> with TickerProviderStateMixin {
       final FirebaseAuth _auth = FirebaseAuth.instance;
       final GoogleSignInAccount googleUser = await _googleSignIn.signIn();
       final GoogleSignInAuthentication googleAuth =
-      await googleUser.authentication;
+          await googleUser.authentication;
 
       final AuthCredential credential = GoogleAuthProvider.getCredential(
         accessToken: googleAuth.accessToken,
@@ -748,9 +763,9 @@ class _SignupState extends State<Signup> with TickerProviderStateMixin {
       );
       final FirebaseUser user = await _auth.signInWithCredential(credential);
       pd.displayDialog("Please wait...");
-      checkFirestoreAndRedirect(mEmail, googleAuth, googleUser, user);
+      checkFirestoreAndRedirect(googleUser.email, googleAuth, googleUser, user);
       return user;
-    }catch(e){
+    } catch (e) {
       print('ex === ${e.toString()}');
     }
     return null;
@@ -758,25 +773,100 @@ class _SignupState extends State<Signup> with TickerProviderStateMixin {
 
   Future<void> _handleFacebookSignIn() async {
     final facebookLogin = FacebookLogin();
-    final result = await facebookLogin.logIn(['email','user_birthday', 'user_gender']);//'user_friends',
+//    await FirebaseAuth.instance.signOut();
+//    await facebookLogin.logOut();
+//    return;
+    final result = await facebookLogin
+        .logIn(['email','public_profile']); //'user_birthday', 'user_gender''user_friends',
     switch (result.status) {
       case FacebookLoginStatus.loggedIn:
         final FirebaseAuth _auth = FirebaseAuth.instance;
-        final AuthCredential credential = FacebookAuthProvider.getCredential(accessToken: result.accessToken.token);
+        final AuthCredential credential = FacebookAuthProvider.getCredential(
+            accessToken: result.accessToken.token);
         final FirebaseUser user = await _auth.signInWithCredential(credential);
-        print(user);
-        //pd.displayDialog("Please wait...");
-        //checkFirestoreAndRedirect(mEmail, null, null, user);
+        if(user.email == null){
+          await FirebaseAuth.instance.signOut();
+          await facebookLogin.logOut();
+          new GeneralUtils()
+              .neverSatisfied(context, 'Error', "Your facebook account doesn't have an email address. Please try with another account");
+          return;
+        }
+//        var graphResponse = await http.get(
+//            'https://graph.facebook.com/v5.0/me?fields=name,first_name,last_name,email&access_token=${result.accessToken.token}');//
+//        print(graphResponse.body);
+//        print(user.email);
+        //print(result.accessToken.toMap());
+//        print(await _auth.currentUser());
+//        for(var info in user.providerData){
+//          print('user info: $info');
+//        }
+        pd.displayDialog("Please wait...");
+        checkFirestoreAndRedirectForFacebook(
+            user.email, user, result.accessToken);
         //_sendTokenToServer(result.accessToken.token);
         //_showLoggedInUI();
         break;
       case FacebookLoginStatus.cancelledByUser:
-        //_showCancelledMessage();
+        new GeneralUtils()
+            .neverSatisfied(context, 'Error', 'error: ${result.errorMessage}');
         break;
       case FacebookLoginStatus.error:
-        new GeneralUtils().neverSatisfied(context, 'Error', result.errorMessage);
+        new GeneralUtils()
+            .neverSatisfied(context, 'Error', 'error: ${result.errorMessage}');
         break;
     }
+  }
+
+  checkFirestoreAndRedirectForFacebook(
+      String email, FirebaseUser fbUser, FacebookAccessToken token) async {
+    final facebookLogin = FacebookLogin();
+    String gp = ss.getItem('currency');
+    Map<String, dynamic> data = jsonDecode(gp);
+    Map<String, dynamic> newUserData = new Map();
+    newUserData['Facebook'] = {
+      'oauthAccessToken': token.token,
+      'providerId': 'facebook.com',
+      'signInMethod': 'facebook.com'
+    };
+    String id = FirebaseDatabase.instance.reference().push().key;
+    newUserData['id'] = id;
+    newUserData['blocked'] = false;
+    newUserData['country'] = data['country'];
+    newUserData['created_date'] = new DateTime.now().toString();
+    newUserData['email'] = email;
+    newUserData['firstname'] = fbUser.displayName.split(' ')[0];
+    newUserData['lastname'] = fbUser.displayName.split(' ')[1];
+    newUserData['userId'] = fbUser.uid;
+    newUserData['picture'] = fbUser.photoUrl;
+    newUserData['facebook_id'] = token.userId;
+    newUserData['timestamp'] = FieldValue.serverTimestamp();
+    if (fbUser.phoneNumber != null) {
+      if (fbUser.phoneNumber.isNotEmpty) {
+        newUserData['phone'] = fbUser.phoneNumber;
+      }
+    }
+    newUserData['msgId'] = msgId;
+    Firestore.instance
+        .collection('users')
+        .document(email.toLowerCase())
+        .setData(newUserData)
+        .then((v) {
+      Map<String, dynamic> userData = new Map();
+      userData['email'] = email;
+      userData['fn'] = fbUser.displayName.split(' ')[0];
+      userData['ln'] = fbUser.displayName.split(' ')[1];
+
+      ss.setPrefItem('loggedin', 'true');
+      ss.setPrefItem('user', jsonEncode(userData));
+      sendEmail(fbUser.displayName.split(' ')[0]);
+    }).catchError((err){
+      FirebaseAuth.instance.signOut();
+      facebookLogin.logOut();
+      pd.dismissDialog();
+      pd.displayMessage(
+          context, 'Error', 'An error occurred. Please try again.');
+      return;
+    });
   }
 
   bool validateAndSave() {
@@ -786,7 +876,12 @@ class _SignupState extends State<Signup> with TickerProviderStateMixin {
   }
 
   /// textfromfield custom class
-  Widget textFromField({String placeholder, IconData icon, TextInputType inputType, bool password, bool isFullname}){
+  Widget textFromField(
+      {String placeholder,
+      IconData icon,
+      TextInputType inputType,
+      bool password,
+      bool isFullname}) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 30.0),
       child: Container(
@@ -797,7 +892,7 @@ class _SignupState extends State<Signup> with TickerProviderStateMixin {
             color: Colors.white,
             boxShadow: [BoxShadow(blurRadius: 10.0, color: Colors.black12)]),
         padding:
-        EdgeInsets.only(left: 20.0, right: 30.0, top: 0.0, bottom: 0.0),
+            EdgeInsets.only(left: 20.0, right: 30.0, top: 0.0, bottom: 0.0),
         child: Theme(
           data: ThemeData(
             hintColor: Colors.transparent,
@@ -805,8 +900,9 @@ class _SignupState extends State<Signup> with TickerProviderStateMixin {
           child: TextFormField(
             obscureText: password,
             validator: (value) => value.isEmpty ? 'Please enter value' : null,
-            onSaved: (value) =>
-            (password) ? mPassword = value : isFullname ? fullname = value : mEmail = value,
+            onSaved: (value) => (password)
+                ? mPassword = value
+                : isFullname ? fullname = value : mEmail = value,
             decoration: InputDecoration(
                 border: InputBorder.none,
                 labelText: placeholder,

@@ -28,6 +28,14 @@ class StorageSystem {
     return Prefs.getString(key, "");
   }
 
+  int getIntItem(String key) {
+    return Prefs.getInt(key, 0);
+  }
+
+  void setIntItem(String key, int value){
+    Prefs.setInt(key, value);
+  }
+
   void clearPref(){
     //storage.clear();
     Prefs.clear();

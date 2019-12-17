@@ -11,9 +11,9 @@ import 'package:treva_shop_flutter/Utils/general.dart';
 class flashSale extends StatefulWidget {
 
   final List<Products> salesProductsWithSchedule;
-  final country;
+  final country, banner_head;
 
-  flashSale(this.country, {this.salesProductsWithSchedule});
+  flashSale(this.country, this.banner_head, {this.salesProductsWithSchedule});
 
   @override
   _flashSaleState createState() => _flashSaleState();
@@ -147,8 +147,8 @@ class _flashSaleState extends State<flashSale> {
           child: Column(
             children: <Widget>[
               /// Header banner
-              Image.asset(
-                "assets/img/flashsalebanner.png",
+              Image.network(
+                widget.banner_head,//assets/img/flashsalebanner.png
                 height: 195.0,
                 width: 1000.0,
                 fit: BoxFit.cover,

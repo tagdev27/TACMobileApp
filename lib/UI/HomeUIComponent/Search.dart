@@ -330,10 +330,13 @@ class _searchAppbarState extends State<searchAppbar> {
   /// Item Favorite Item with Card item
   Widget _favorite() {
     final p = widget.products;
+    if(p.length < 4){
+      return Text('');
+    }
     List<int> indexes = new List();
 
     for (int i = 0; i < 5; i++) {
-      indexes.add(_random.nextInt(p.length));
+      indexes.add(_random.nextInt(p.length - 1));
     }
 
     return Padding(

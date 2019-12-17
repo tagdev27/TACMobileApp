@@ -13,7 +13,8 @@ import 'package:treva_shop_flutter/Utils/progress.dart';
 class MoreMenu extends StatefulWidget {
 
   final List<Products> products;
-  MoreMenu(this.products);
+  final List<MainCategory> menus;
+  MoreMenu(this.products, this.menus);
 
   @override
   State<StatefulWidget> createState() => _MoreMenu();
@@ -51,7 +52,7 @@ class _MoreMenu extends State<MoreMenu> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    getMainCategories();
+//    getMainCategories();
   }
 
   @override
@@ -119,8 +120,8 @@ class _MoreMenu extends State<MoreMenu> {
                           delegate: SliverChildBuilderDelegate(
 
                               /// Calling itemCard Class for constructor card
-                              (context, index) => itemCard(widget.products, menus[index]),
-                              childCount: menus.length)),
+                              (context, index) => itemCard(widget.products, widget.menus[index]),
+                              childCount: widget.menus.length)),
                     ),
                   ],
                 ),

@@ -20,7 +20,7 @@ class _deliveryState extends State<delivery> {
   StorageSystem ss = new StorageSystem();
   final formKey = GlobalKey<FormState>();
   String fn, ln, num, email;
-  String _fn, _ln, _email;
+  String _fn, _ln, _email, _num;
   String fullname, phone, address, city, state = 'select option', country = 'select option', instructions, card_message;
 
   List<String> stateList = ["select option", "Lagos"];
@@ -41,6 +41,7 @@ class _deliveryState extends State<delivery> {
         _fn = '${user['fn']}';
         _ln = '${user['ln']}';
         _email = '${user['email']}';
+        _num = (user['phone'] != null) ? (user[phone] != "Not available. Update now") ? '${user['phone']}' : '' : '';
       });
     }
   }
@@ -98,7 +99,7 @@ class _deliveryState extends State<delivery> {
                     width: 210.0,
                     child: TextFormField(
                       decoration: InputDecoration(
-                          hintText: "Pin Code",
+                          hintText: "First Name",
                           hintStyle: TextStyle(color: Colors.black54),
                       border: InputBorder.none),
                       keyboardType: TextInputType.text,
@@ -173,7 +174,7 @@ class _deliveryState extends State<delivery> {
                       validator: (value) => value.isEmpty ? 'Please enter number' : null,
                       onSaved: (value) => num = value,
                       textAlign: TextAlign.right,
-                      initialValue: '',
+                      initialValue: _num,
                     ),
                   ),
                 ),
@@ -531,7 +532,7 @@ class _deliveryState extends State<delivery> {
       details['lastname'] = ln;
       details['phone'] = num;
       details['recipientphone'] = phone;
-      details['specialinstruction'] = instructions;
+      details['specialinstructions'] = instructions;
       details['state'] = state;
       details['town'] = city;
 

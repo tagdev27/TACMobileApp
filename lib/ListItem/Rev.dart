@@ -6,7 +6,7 @@ class Reviews {
   final String text;
   final int rating;
   final String created_date;
-  final String product_id;
+  final String product_key;
 
   Reviews(
       {this.id,
@@ -16,5 +16,5 @@ class Reviews {
       this.text,
       this.rating,
       this.created_date,
-      this.product_id});
+      this.product_key});
 }

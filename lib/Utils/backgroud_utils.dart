@@ -228,7 +228,7 @@ class Utils {
   Future<List<Reviews>> getReviews(String key) async {
     var query = await Firestore.instance
         .collection('reviews')
-        .where('product_id', isEqualTo: key)
+        .where('product_key', isEqualTo: key)//product_id
         .getDocuments();
 
     List<Reviews> reviews = new List();
@@ -244,7 +244,7 @@ class Utils {
           text: r['text'],
           rating: r['rating'],
           created_date: r['created_date'],
-          product_id: r['product_id']);
+          product_key: r['product_key']);
       reviews.add(rev);
     });
 

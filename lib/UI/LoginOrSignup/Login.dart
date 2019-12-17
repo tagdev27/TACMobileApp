@@ -268,7 +268,7 @@ class _loginScreenState extends State<loginScreen>
                                               new Signup()));
                                 },
                                 child: Text(
-                                  "Not Have Acount? Sign Up",
+                                  "Don't Have Acount? Sign Up",
                                   style: TextStyle(
                                       color: Colors.white,
                                       fontSize: 13.0,
@@ -337,7 +337,7 @@ class _loginScreenState extends State<loginScreen>
     FirebaseAuth.instance
         .signInWithEmailAndPassword(email: mEmail, password: mPassword)
         .then((user) {
-      checkFirestoreAndRedirect(mEmail, null);
+      checkFirestoreAndRedirect(mEmail, null, null);
     }).catchError((err) {
       pd.dismissDialog();
       pd.displayMessage(context, 'Error', '${err.toString()}');
@@ -345,7 +345,7 @@ class _loginScreenState extends State<loginScreen>
   }
 
   checkFirestoreAndRedirect(
-      String email, GoogleSignInAuthentication googleAuth) {
+      String email, GoogleSignInAuthentication googleAuth, GoogleSignIn googleUser) {
     Firestore.instance
         .collection('users')
         .document(email.toLowerCase())
@@ -354,6 +354,9 @@ class _loginScreenState extends State<loginScreen>
       //check if user exists in database
       if (!result.exists) {
         FirebaseAuth.instance.signOut();
+        if(googleUser != null){
+          googleUser.signOut();
+        }
         pd.dismissDialog();
         pd.displayMessage(
             context, 'Error', 'User does not exist. Please create an account.');
@@ -364,6 +367,9 @@ class _loginScreenState extends State<loginScreen>
       bool blocked = user['blocked'];
       if (blocked) {
         FirebaseAuth.instance.signOut();
+        if(googleUser != null){
+          googleUser.signOut();
+        }
         pd.dismissDialog();
         pd.displayMessage(context, 'Error',
             'Sorry, user has been blocked. Please contact support.');
@@ -401,6 +407,15 @@ class _loginScreenState extends State<loginScreen>
         _PlayAnimation();
         return tap;
       });
+    }).catchError((err){
+      FirebaseAuth.instance.signOut();
+      if(googleUser != null){
+        googleUser.signOut();
+      }
+      pd.dismissDialog();
+      pd.displayMessage(
+          context, 'Error', 'An error occurred. Please try again.');
+      return;
     });
   }
 
@@ -423,35 +438,111 @@ class _loginScreenState extends State<loginScreen>
         idToken: googleAuth.idToken,
       );
       final FirebaseUser user = await _auth.signInWithCredential(credential);
-      checkFirestoreAndRedirect(mEmail, googleAuth);
+      pd.displayDialog("Please wait...");
+      checkFirestoreAndRedirect(user.email, googleAuth, _googleSignIn);
       return user;
     }catch(err) {
-      print(err);
+      print('google err = $err');
     }
     return null;
   }
 
   Future<void> _handleFacebookSignIn() async {
     final facebookLogin = FacebookLogin();
-    final result = await facebookLogin.logIn(['email','user_birthday','user_gender']);
+    //facebookLogin.loginBehavior(FacebookLoginBehavior.nativeOnly);
+    final result = await facebookLogin.logIn(['email']);//'user_birthday','user_gender'
     switch (result.status) {
       case FacebookLoginStatus.loggedIn:
         final FirebaseAuth _auth = FirebaseAuth.instance;
         final AuthCredential credential = FacebookAuthProvider.getCredential(accessToken: result.accessToken.token);
         final FirebaseUser user = await _auth.signInWithCredential(credential);
-        print(user);
+        if(user.email == null){
+          await FirebaseAuth.instance.signOut();
+          await facebookLogin.logOut();
+          new GeneralUtils()
+              .neverSatisfied(context, 'Error', "Your facebook account doesn't have an email address. Please try with another account");
+          return;
+        }
+        //print(user);
         //pd.displayDialog("Please wait...");
-        //checkFirestoreAndRedirect(mEmail, null, null, user);
+        pd.displayDialog("Please wait...");
+        checkFirestoreAndRedirectForFacebook(user.email, user, result.accessToken);
         //_sendTokenToServer(result.accessToken.token);
         //_showLoggedInUI();
         break;
       case FacebookLoginStatus.cancelledByUser:
-      //_showCancelledMessage();
+        new GeneralUtils().neverSatisfied(context, 'Error', result.errorMessage);
         break;
       case FacebookLoginStatus.error:
         new GeneralUtils().neverSatisfied(context, 'Error', result.errorMessage);
         break;
     }
+  }
+
+  checkFirestoreAndRedirectForFacebook(String email, FirebaseUser fbUser, FacebookAccessToken token) {
+    final facebookLogin = FacebookLogin();
+    Firestore.instance
+        .collection('users')
+        .document(email.toLowerCase())
+        .get()
+        .then((result) {
+      //check if user exists in database
+      if (!result.exists) {
+        FirebaseAuth.instance.signOut();
+        facebookLogin.logOut();
+        pd.dismissDialog();
+        pd.displayMessage(
+            context, 'Error', 'User does not exist. Please create an account.');
+        return;
+      }
+      //check if user has been blocked
+      Map<String, dynamic> user = result.data;
+      bool blocked = user['blocked'];
+      if (blocked) {
+        FirebaseAuth.instance.signOut();
+        facebookLogin.logOut();
+        pd.dismissDialog();
+        pd.displayMessage(context, 'Error',
+            'Sorry, user has been blocked. Please contact support.');
+      }
+      Map<String, dynamic> updateUserData = new Map();
+      if (msgId.isNotEmpty) {
+        updateUserData['msgId'] = msgId;
+      }
+        updateUserData['Facebook'] = {
+          'oauthAccessToken': token.token,
+          'providerId': 'facebook.com',
+          'signInMethod': 'facebook.com'
+        };
+      Firestore.instance
+          .collection('users')
+          .document(email.toLowerCase())
+          .updateData(updateUserData)
+          .then((v) {
+        pd.dismissDialog();
+        Map<String, dynamic> userData = new Map();
+        userData['email'] = email;
+        userData['fn'] = user['firstname'];
+        userData['ln'] = user['lastname'];
+        ss.setPrefItem('loggedin', 'true');
+        ss.setPrefItem('user', jsonEncode(userData));
+        setState(() {
+          tap = 1;
+        });
+        new LoginAnimation(
+          animationController: sanimationController.view,
+        );
+        _PlayAnimation();
+        return tap;
+      });
+    }).catchError((err){
+      FirebaseAuth.instance.signOut();
+      facebookLogin.logOut();
+      pd.dismissDialog();
+      pd.displayMessage(
+          context, 'Error', 'An error occurred. Please try again.');
+      return;
+    });
   }
 
   bool validateAndSave() {

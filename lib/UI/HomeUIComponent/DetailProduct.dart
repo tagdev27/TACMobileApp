@@ -223,6 +223,11 @@ class _detailProdukState extends State<detailProduk> {
   }
 
   Widget build(BuildContext context) {
+    if(mounted){
+      setState(() {
+        valueItemChart = new GeneralUtils().cartSize();
+      });
+    }
     return Scaffold(
       key: _key,
       appBar: AppBar(
@@ -257,7 +262,7 @@ class _detailProdukState extends State<detailProduk> {
         centerTitle: true,
         backgroundColor: Colors.white,
         title: Text(
-          "Product Detail",
+          "Product Details",
           style: TextStyle(
             fontWeight: FontWeight.w500,
             color: Colors.black54,
@@ -724,7 +729,7 @@ class _detailProdukState extends State<detailProduk> {
       revs.add(Padding(padding: EdgeInsets.only(left: 0.0,right: 20.0,top: 15.0,bottom: 7.0),
         child: _line(),
       ));
-      revs.add(_buildRating(double.parse('${r.rating}'), r.created_date, r.text, (rating){}, "assets/avatars/avatar-2.jpg"));
+      revs.add(_buildRating(double.parse('${r.rating}'), r.created_date, r.text, (rating){}, "https://tacadmin.firebaseapp.com/assets/img/default-avatar.png"));//assets/avatars/avatar-2.jpg
     });
 
     return Column(
@@ -738,7 +743,7 @@ class _detailProdukState extends State<detailProduk> {
         height: 45.0,
         width: 45.0,
         decoration: BoxDecoration(
-            image: DecorationImage(image: AssetImage(image),fit: BoxFit.cover),
+            image: DecorationImage(image: NetworkImage(image),fit: BoxFit.cover),
             borderRadius: BorderRadius.all(Radius.circular(50.0))
         ),
       ),

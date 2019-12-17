@@ -40,7 +40,8 @@ class _callCenterState extends State<callCenter> {
   if (await canLaunch(url)) {
    await launch(url);
   } else {
-   throw 'Could not launch $url';
+//   throw 'Could not launch $url';
+   new GeneralUtils().neverSatisfied(context, 'Error', 'Cannot open parameter.');
   }
  }
 

@@ -324,7 +324,7 @@ class _orderState extends State<order> {
             padding: const EdgeInsets.only(
                 top: 48.0, bottom: 5.0, left: 0.0, right: 25.0),
             child: Container(
-              height: 130.0,
+              padding: EdgeInsets.only(top: 20.0, left: 5.0, right: 5.0, bottom: 20.0),
               decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.all(Radius.circular(10.0)),
@@ -342,6 +342,7 @@ class _orderState extends State<order> {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.max,
                     children: <Widget>[
                       Text(
                         "Delivery Address",
@@ -356,13 +357,16 @@ class _orderState extends State<order> {
                             color: Colors.black38),
                       ),
                       Padding(padding: EdgeInsets.only(top: 2.0)),
-                      Text(
-                        "House: ${shipping['address']}, ${shipping['town']}, \n${shipping['state']}, ${shipping['country']}\nPhone: ${shipping['recipientphone']}\nInstruction: ${shipping['specialinstruction']}",
-                        style: _txtCustom.copyWith(
-                            fontWeight: FontWeight.w400,
-                            fontSize: 12.0,
-                            color: Colors.black38),
-                        overflow: TextOverflow.ellipsis,
+                      Container(
+                        width: MediaQuery.of(context).size.width - 120.0,
+                        child: Text(
+                          "House: ${shipping['address']}, ${shipping['town']}, \n${shipping['state']}, ${shipping['country']}\nPhone: ${shipping['recipientphone']}\nInstruction: ${shipping['specialinstruction']}",
+                          style: _txtCustom.copyWith(
+                              fontWeight: FontWeight.w400,
+                              fontSize: 12.0,
+                              color: Colors.black38),
+                          overflow: TextOverflow.clip,
+                        ),
                       )
                     ],
                   )
