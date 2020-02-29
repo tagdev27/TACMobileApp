@@ -169,7 +169,7 @@ class _detailProdukState extends State<detailProduk> {
         title: products[i].name,
         Salary: new GeneralUtils().currencyFormattedMoney(products[i].price),
         Rating: '${products[i].ratingValue}',
-        sale: '${products[i].stock} in stock',
+        sale: '',//'${products[i].stock} in stock',
       ),);
       suggest.add(Padding(padding: EdgeInsets.only(left: 10.0)),);
     }
@@ -370,7 +370,7 @@ class _detailProdukState extends State<detailProduk> {
                                 Padding(
                                   padding: const EdgeInsets.only(right: 15.0),
                                   child: Text(
-                                    '${gridItem.stock} in stock',
+                                    '',//'${gridItem.stock} in stock',
                                     style: TextStyle(
                                         color: Colors.black54,
                                         fontSize: 13.0,

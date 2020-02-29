@@ -725,7 +725,7 @@ class ItemGrid extends StatelessWidget {
                         ],
                       ),
                       Text(
-                        '${gridItem.stock} in stock',
+                        '',//'${gridItem.stock} in stock',
                         style: TextStyle(
                             fontFamily: "Sans",
                             color: Colors.black26,

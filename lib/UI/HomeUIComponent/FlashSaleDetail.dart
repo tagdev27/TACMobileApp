@@ -131,7 +131,7 @@ class _flashSaleDetailState extends State<flashSaleDetail> {
         title: products[i].name,
         Salary: new GeneralUtils().currencyFormattedMoney(products[i].price),
         Rating: '${products[i].ratingValue}',
-        sale: '${products[i].stock} in stock',
+        sale: '',//'${products[i].stock} in stock',
       ),);
       suggest.add(Padding(padding: EdgeInsets.only(left: 10.0)),);
     }
@@ -285,7 +285,7 @@ class _flashSaleDetailState extends State<flashSaleDetail> {
                         Padding(
                           padding: const EdgeInsets.only(right: 15.0),
                           child: Text(
-                            '${itemSale.stock} in stock',
+                            '',//'${itemSale.stock} in stock',
                             style: _customTextStyle.copyWith(
                                 color: Colors.white, fontSize: 13.5),
                           ),

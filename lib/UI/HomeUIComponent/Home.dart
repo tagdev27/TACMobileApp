@@ -330,8 +330,8 @@ class _MenuState extends State<Menu> with TickerProviderStateMixin {
         overlayShadowSize: 0.9,
         images: [
           NetworkImage("${banners['social_tree_image']}"),
-//          NetworkImage("${banners['slider1_image']}"),
-//          NetworkImage("${banners['slider2_image']}"),
+          NetworkImage("${banners['slider1_image']}"),
+          NetworkImage("${banners['slider2_image']}"),
           NetworkImage("${banners['grid1_image']}"),
           NetworkImage("${banners['grid2_image']}"),
           NetworkImage("${banners['grid3_image']}"),
@@ -1045,7 +1045,7 @@ class ItemGrid extends StatelessWidget {
                         ],
                       ),
                       Text(
-                        '${gridItem.stock} in stock',
+                        '',//'${gridItem.stock} in stock',
                         style: TextStyle(
                             fontFamily: "Sans",
                             color: Colors.black26,

@@ -224,7 +224,7 @@ class _searchAppbarState extends State<searchAppbar> {
           title: p.name,
           Salary: new GeneralUtils().currencyFormattedMoney(p.price),
           Rating: '${p.ratingValue}',
-          sale: '${p.stock} in stock',
+          sale: '',//'${p.stock} in stock',
         ),
       );
     });
@@ -368,7 +368,7 @@ class _searchAppbarState extends State<searchAppbar> {
                     Salary: new GeneralUtils()
                         .currencyFormattedMoney(p[indexes[0]].price),
                     Rating: '${p[indexes[0]].ratingValue}',
-                    sale: '${p[indexes[0]].stock} in stock',
+                    sale: '',//'${p[indexes[0]].stock} in stock',
                   ),
                   Padding(padding: EdgeInsets.only(left: 20.0)),
                   FavoriteItem(
@@ -379,7 +379,7 @@ class _searchAppbarState extends State<searchAppbar> {
                     Salary: new GeneralUtils()
                         .currencyFormattedMoney(p[indexes[1]].price),
                     Rating: '${p[indexes[1]].ratingValue}',
-                    sale: '${p[indexes[1]].stock} in stock',
+                    sale: '',//'${p[indexes[1]].stock} in stock',
                   ),
                   Padding(padding: EdgeInsets.only(left: 20.0)),
                   FavoriteItem(
@@ -390,7 +390,7 @@ class _searchAppbarState extends State<searchAppbar> {
                     Salary: new GeneralUtils()
                         .currencyFormattedMoney(p[indexes[2]].price),
                     Rating: '${p[indexes[2]].ratingValue}',
-                    sale: '${p[indexes[2]].stock} in stock',
+                    sale: '',//'${p[indexes[2]].stock} in stock',
                   ),
                   Padding(padding: EdgeInsets.only(left: 20.0)),
                   FavoriteItem(
@@ -401,7 +401,7 @@ class _searchAppbarState extends State<searchAppbar> {
                     Salary: new GeneralUtils()
                         .currencyFormattedMoney(p[indexes[3]].price),
                     Rating: '${p[indexes[3]].ratingValue}',
-                    sale: '${p[indexes[3]].stock} in stock',
+                    sale: '',//'${p[indexes[3]].stock} in stock',
                   ),
                   Padding(padding: EdgeInsets.only(left: 20.0)),
                   FavoriteItem(
@@ -412,7 +412,7 @@ class _searchAppbarState extends State<searchAppbar> {
                     Salary: new GeneralUtils()
                         .currencyFormattedMoney(p[indexes[4]].price),
                     Rating: '${p[indexes[4]].ratingValue}',
-                    sale: '${p[indexes[4]].stock} in stock',
+                    sale: '',//'${p[indexes[4]].stock} in stock',
                   ),
                   Padding(padding: EdgeInsets.only(right: 10.0)),
                 ],

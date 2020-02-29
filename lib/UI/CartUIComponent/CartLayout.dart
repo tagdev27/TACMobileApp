@@ -92,7 +92,7 @@ class _cartState extends State<cart> {
               img: item['pictures'][0],
               id: item['id'],
               title: item['name'],
-              desc: item['shortDetails'],
+              desc: ('${item['shortDetails']}'.length > 20) ? '${item['shortDetails']}'.substring(0, 20) : '${item['shortDetails']}',
               price: new GeneralUtils().currencyFormattedMoney(item['price']),
               quantity: quantity),
         );
