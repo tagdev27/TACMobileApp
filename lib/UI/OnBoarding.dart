@@ -32,7 +32,7 @@ final pages = [
       iconColor: Colors.black,
       bubbleBackgroundColor: Colors.black,
       title: Text(
-        'TAC - Online Gift Shop App',style: _fontHeaderStyle,
+        'TAC - Online Gift Shop App',style: _fontHeaderStyle,textAlign: TextAlign.center,
       ),
       body: Container(
         height: 250.0,

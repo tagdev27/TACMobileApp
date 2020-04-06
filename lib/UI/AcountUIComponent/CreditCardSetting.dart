@@ -69,6 +69,8 @@ class _creditCardSettingState extends State<creditCardSetting> {
         .then((query) {
       if (query.documents.length > 0) {
         int dex  = 0;
+        orders.clear();
+        transactions.clear();
         query.documents.forEach((doc) {
           Map<String,dynamic> data = doc.data;
           String date = "${data['created_date']}".split('-')[0];
@@ -411,7 +413,7 @@ class dataTransaction extends StatelessWidget {
     return Column(
       children: <Widget>[
         Padding(
-          padding: const EdgeInsets.only(top: 20.0, bottom: 20.0, left: 5.0, right: 5.0),
+          padding: const EdgeInsets.only(top: 20.0, bottom: 20.0, left: 0.0, right: 0.0),
           child: InkWell(
               onTap: () {
                 selected_index = index;
@@ -420,7 +422,7 @@ class dataTransaction extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
                   Padding(
-                    padding: const EdgeInsets.only(right: 10.0),
+                    padding: const EdgeInsets.only(right: 0.0),
                     child: Text(
                       date,
                       style: _txtCustomSub.copyWith(
@@ -473,7 +475,7 @@ class dataTransaction extends StatelessWidget {
       dynamic pro = cart['product'];
       int quantity = cart['quantity'];
 
-      double pro_price = double.parse("${pro['price']}") * quantity;
+      double pro_price = double.parse("${pro['price']}");// * quantity;
       double price = pro_price / convertion_rate;
 
 //      print('data at index $index with id $id has price of $price');
@@ -580,6 +582,7 @@ class dataTransaction extends StatelessWidget {
             Container(
               height: 20.0,
             ),
+            /**
             ListTile(
               title: Text(
                 "Subtotal",
@@ -643,11 +646,9 @@ class dataTransaction extends StatelessWidget {
                             fontFamily: ""),
                       ),
             ),
+             */
             Container(
               margin: EdgeInsets.only(top: 20.0),
-              child: Divider(
-                height: 1.0,
-              ),
             ),
             ListTile(
               title: Text(

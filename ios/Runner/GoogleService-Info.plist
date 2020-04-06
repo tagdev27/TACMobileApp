@@ -3,9 +3,11 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>640531224553-lo10a8dv324korpj6r61tkevha67jeic.apps.googleusercontent.com</string>
+	<string>640531224553-vh3tuonbq6fogoh1lr9i337gbuiv0amt.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.640531224553-lo10a8dv324korpj6r61tkevha67jeic</string>
+	<string>com.googleusercontent.apps.640531224553-vh3tuonbq6fogoh1lr9i337gbuiv0amt</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>640531224553-dlbied9bb5t3a9tdr4rgckj7cqn0t6us.apps.googleusercontent.com</string>
 	<key>API_KEY</key>
 	<string>AIzaSyCyM9YI7wx-lcEMMctHf83VUesOdfERdsA</string>
 	<key>GCM_SENDER_ID</key>
@@ -13,7 +15,7 @@
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.taconline.giftshop</string>
+	<string>com.tac.giftshop</string>
 	<key>PROJECT_ID</key>
 	<string>taconlinegiftshop</string>
 	<key>STORAGE_BUCKET</key>
@@ -29,7 +31,7 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:640531224553:ios:6b1bf4ff4bc20b08</string>
+	<string>1:640531224553:ios:911bbffe5ff57f70e51d78</string>
 	<key>DATABASE_URL</key>
 	<string>https://taconlinegiftshop.firebaseio.com</string>
 </dict>

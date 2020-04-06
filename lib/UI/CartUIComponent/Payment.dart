@@ -23,11 +23,16 @@ import 'package:http/http.dart' as http;
 import 'package:treva_shop_flutter/Utils/storage.dart';
 import 'package:flutter_html_to_pdf/flutter_html_to_pdf.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 
 class payment extends StatefulWidget {
   final Map<String, dynamic> details;
 
   payment(this.details);
+
+  final ChromeSafariBrowser browser =
+      new MyChromeSafariBrowser(new MyInAppBrowser());
 
   @override
   _paymentState createState() => _paymentState();
@@ -55,9 +60,11 @@ class _paymentState extends State<payment> {
 
   double finalT = 0;
 
+  double taxValue = 0;
+
   /// Duration for popup card if user succes to payment
   StartTime() async {
-    return Timer(Duration(seconds: 10), navigator);
+    return Timer(Duration(seconds: 7), navigator);
   }
 
   /// Navigation to route after user succes payment
@@ -82,6 +89,20 @@ class _paymentState extends State<payment> {
         });
       });
     });
+  }
+
+  Future<void> _launchURL(String url) async {
+    if (await canLaunch(url)) {
+      await launch(url,
+          enableDomStorage: true,
+          forceWebView: true,
+          enableJavaScript: true,
+          statusBarBrightness: Brightness.dark);
+    } else {
+//      throw 'Could not launch $url';
+      new GeneralUtils()
+          .neverSatisfied(context, 'Error', 'Cannot open parameter.');
+    }
   }
 
   @override
@@ -129,14 +150,11 @@ class _paymentState extends State<payment> {
           "${resp['public_key']}"; //for test FLWPUBK_TEST-407af7e7116f735e90d8f87c23b2d205-X
       enc_key = "${resp['enc_key']}"; //for test FLWSECK_TESTee51a806e09f
 
-      getDeliveryOptions();
+//      getDeliveryOptions();
       setState(() {
         _inAsyncCall = false;
       });
     });
-    //RavePayInitializer
-//    await PaystackPlugin.initialize(
-//        publicKey: "pk_test_8be8b3b21803dcb62514b6e55f3c6f90f4a74483");
   }
 
   void getTaxValue() async {
@@ -149,22 +167,28 @@ class _paymentState extends State<payment> {
         .collection('settings')
         .document('tax')
         .get();
-    int value = get_tax.data['tax_value'];
+    taxValue = get_tax.data['tax_value'];
     new GeneralUtils().totalAmountInCartDouble().then((t) {
-      double mTax = ((GeneralUtils().country_priceDouble(t) * value) / 100);
-      finalT = mTax +
-          //GeneralUtils().country_priceDouble(2000.00) +
-          GeneralUtils().country_priceDouble(t);
+      ft = t;
       setState(() {
-        tax = GeneralUtils().currencyFormattedMoneyDouble(mTax);
-        _tax = mTax;
-        //_delivery = GeneralUtils().country_priceDouble(2000.00);
-        final_amount = GeneralUtils().currencyFormattedMoneyDouble(finalT);
-        ft = GeneralUtils().country_priceDouble(finalT);
+        _inAsyncCall = false;
       });
-
-      initFlutterWave(); //flutterwave initializer
     });
+//    new GeneralUtils().totalAmountInCartDouble().then((t) {
+//      double mTax = ((GeneralUtils().country_priceDouble(t) * value) / 100);
+//      finalT = mTax +
+//          //GeneralUtils().country_priceDouble(2000.00) +
+//          GeneralUtils().country_priceDouble(t);
+//      setState(() {
+//        tax = GeneralUtils().currencyFormattedMoneyDouble(mTax);
+//        _tax = mTax;
+//        //_delivery = GeneralUtils().country_priceDouble(2000.00);
+//        final_amount = GeneralUtils().currencyFormattedMoneyDouble(finalT);
+//        ft = GeneralUtils().country_priceDouble(finalT);
+//      });
+//
+//      initFlutterWave(); //flutterwave initializer
+//    });
   }
 
   /// For radio button
@@ -245,6 +269,7 @@ class _paymentState extends State<payment> {
                       ),
                     ),
                     productFill(),
+                    /**
                     Container(
                       height: 20.0,
                     ),
@@ -266,9 +291,6 @@ class _paymentState extends State<payment> {
                             color: Color(MyColors.primary_color),
                             fontFamily: ""),
                       ),
-                    ),
-                    Container(
-                      height: 0.0,
                     ),
                     ListTile(
                       title: Text(
@@ -386,11 +408,9 @@ class _paymentState extends State<payment> {
                           color: Colors.black,
                           fontFamily: ""),
                     ),
+                     */
                     Container(
                       margin: EdgeInsets.only(top: 20.0),
-                      child: Divider(
-                        height: 1.0,
-                      ),
                     ),
                     ListTile(
                       title: Text(
@@ -403,7 +423,7 @@ class _paymentState extends State<payment> {
                             fontFamily: ""),
                       ),
                       trailing: Text(
-                        final_amount,
+                        total_amount, //final_amount,
                         style: TextStyle(
                             letterSpacing: 0.1,
                             fontWeight: FontWeight.bold,
@@ -416,7 +436,20 @@ class _paymentState extends State<payment> {
                     /// Button pay
                     InkWell(
                       onTap: () {
-                        payNow();
+                        final res = ss.getItem('currency');
+                        Map<String, dynamic> data = jsonDecode(res);
+                        String curr = data['currency_name'];
+                        if(curr != 'USD' || curr != 'CAD' || curr != 'EUR' || curr != 'GBP'){
+                          payNow();
+                          return;
+                        }
+                        String ru = ss.getItem('retry_url');
+                        String k = ss.getItem('retry_key');
+                        if (ru.isEmpty) {
+                          uploadDataAndOpenPaymentDialog();
+                        } else {
+                          openBrowserPayment(ru, k);
+                        }
                         //addOrderToFirebase("249347845");
                       },
                       child: Container(
@@ -488,6 +521,146 @@ class _paymentState extends State<payment> {
     );
   }
 
+  openBrowserPayment(String url, String key) async {
+//    setState(() {
+//      _inAsyncCall = true;
+//    });
+    Firestore.instance
+        .collection('orders')
+        .document(key)
+        .snapshots()
+        .listen((_data) async {
+      if (_data.data == null) {
+        return;
+      }
+      Map<String, dynamic> dt = _data.data;
+      String ps = dt['payment_status'];
+      if (ps == 'paid') {
+//        if(widget.browser.isOpened()){
+//          widget.browser.onClosed();
+//        }
+        updateStockLevelForProduct();
+//        setState(() {
+//          _inAsyncCall = false;
+//        });
+        ss.deletePref('retry_url');
+        ss.deletePref('retry_key');
+        new GeneralUtils().showToast('Payment made successfully. Thank you for choosing TAC.');
+        _showDialog(context);
+        StartTime();
+      }
+    });
+    await widget.browser.open(
+        url: url,
+        options: ChromeSafariBrowserClassOptions(
+            androidChromeCustomTabsOptions:
+                AndroidChromeCustomTabsOptions(addShareButton: false, showTitle: true, toolbarBackgroundColor: '#EC008C'),
+            iosSafariOptions: IosSafariOptions(barCollapsingEnabled: true))).catchError((err){
+      _launchURL(url);
+    });
+  }
+
+  uploadDataAndOpenPaymentDialog() {
+    setState(() {
+      _inAsyncCall = true;
+    });
+    final res = ss.getItem('currency');
+    Map<String, dynamic> data = jsonDecode(res);
+    String curr = data['currency'];
+    String country = data['country'];
+    String ex_rate = "${data['exchange_rate']}";
+    String reference =
+        '${Random().nextInt(9999)}${Random().nextInt(9999)}'; //FirebaseDatabase.instance.reference().push().key;
+    DateTime dt = DateTime.now();
+    final key = FirebaseDatabase.instance.reference().push().key;
+    final track =
+        double.parse('${Random().nextInt(99999)}${Random().nextInt(99999)}')
+            .ceil();
+    List<dynamic> track_details = new List();
+    final mT = Tracking('Order Placed', 'We have received your order', 'start',
+        '${dt.month}/${dt.day}/${dt.year} - ${dt.hour}:${dt.minute}:${dt.second}');
+    track_details.add(mT.toJSON());
+
+    var other_payment_details = {
+      'tax_value': taxValue,
+      'tax': 0,
+      'delivery': 0,
+      'delivery_type': ''
+    };
+
+    var months = [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec"
+    ];
+
+    List<dynamic> product = new List();
+
+    new GeneralUtils().getCartItems().forEach((cart) {
+      Map<String, dynamic> item = cart['product'];
+      int quantity = cart['quantity'];
+      var ct = {'product': item, 'quantity': quantity};
+      product.add(ct);
+    });
+
+    String retryUrl =
+        'https://tacgifts.com/home/checkout/success?orderrefno=$reference&orderkey=$key';
+
+    var order = {
+      'carts': product,
+      'currency_used': curr,
+      'conversion_rate': ex_rate,
+      'payment_gateway_fee': 0,
+      'merchant_fee': 0,
+      'payment_gateway_used': 'none',
+      'order_platform': 'mobile_app',
+      'transaction_id': double.parse(reference).ceil(),
+      'id': key,
+      'country': country,
+      'email': widget.details['email'],
+      'created_date':
+          '${months[dt.month - 1]} ${dt.day}, ${dt.year} - ${dt.hour}:${dt.minute}:${dt.second}',
+      'timestamp': FieldValue.serverTimestamp(),
+      'track_id': track,
+      'status': 'pending',
+      'payment_status': 'unpaid',
+      'total_amount': ft,
+      'shipping_details': widget.details,
+      'gift_card_style': '',
+      'tracking_details': track_details,
+      'other_payment_details': other_payment_details,
+      'retry_url': retryUrl
+    };
+
+    Firestore.instance
+        .collection('orders')
+        .document(key)
+        .setData(order)
+        .then((d) {
+      setState(() {
+        _inAsyncCall = false;
+      });
+      ss.setPrefItem("retry_url", retryUrl);
+      ss.setPrefItem("retry_key", key);
+      openBrowserPayment(retryUrl, key);
+    }).catchError((err) {
+      setState(() {
+        _inAsyncCall = false;
+      });
+      new GeneralUtils()
+          .neverSatisfied(context, 'Error', 'An error occured, try again');
+    });
+  }
+
   String setupCurrencyAndCountry() {
     final res = ss.getItem('currency');
     Map<String, dynamic> data = jsonDecode(res);
@@ -516,11 +689,11 @@ class _paymentState extends State<payment> {
   }
 
   payNow() async {
-    if (delivery_selected == "select option") {
-      new GeneralUtils()
-          .neverSatisfied(context, 'Notice', 'Please select delivery option');
-      return;
-    }
+//    if (delivery_selected == "select option") {
+//      new GeneralUtils()
+//          .neverSatisfied(context, 'Notice', 'Please select delivery option');
+//      return;
+//    }
     final res = ss.getItem('currency');
     Map<String, dynamic> data = jsonDecode(res);
     String curr = data['currency_name'];
@@ -535,7 +708,10 @@ class _paymentState extends State<payment> {
     //flutterwave charge
     // Get a reference to RavePayInitializer
     var initializer = RavePayInitializer(
-        amount: ft, publicKey: public_key, encryptionKey: enc_key)// companyName: Text('TAC GIFTS'), companyLogo: Image.network('https://tacgifts.com/assets/images/icon/logo.png'))
+        amount: ft,
+        publicKey: public_key,
+        encryptionKey:
+            enc_key) // companyName: Text('TAC GIFTS'), companyLogo: Image.network('https://tacgifts.com/assets/images/icon/logo.png'))
       ..country = country
       ..currency = (curr == "₦") ? "NGN" : curr
       ..email = widget.details['email']
@@ -567,7 +743,7 @@ class _paymentState extends State<payment> {
           ref = reference;
           card = "";
         });
-        verifyTransaction(ref, "", ex_rate);//response.card.last4Digits
+        verifyTransaction(ref, "", ex_rate); //response.card.last4Digits
         return;
       }
       if (response.status == RaveStatus.error) {
@@ -628,7 +804,8 @@ class _paymentState extends State<payment> {
     }
     'https://api.ravepay.co/flwv3-pug/getpaidx/api/v2/verify'
     */
-    http.get('https://us-central1-taconlinegiftshop.cloudfunctions.net/verifyTransaction?ref=$reference',
+    http.get(
+        'https://us-central1-taconlinegiftshop.cloudfunctions.net/verifyTransaction?ref=$reference',
         headers: {'Authorization': 'api ATCNoQUGOoEvTwqWigCR'}).then((resp) {
 //      print(res.body);
       Map<String, dynamic> res = json.decode(resp.body);
@@ -692,7 +869,9 @@ class _paymentState extends State<payment> {
     String country = data['country'];
     DateTime dt = DateTime.now();
     final key = FirebaseDatabase.instance.reference().push().key;
-    final track = double.parse('${Random().nextInt(99999)}${Random().nextInt(99999)}').ceil();
+    final track =
+        double.parse('${Random().nextInt(99999)}${Random().nextInt(99999)}')
+            .ceil();
     //FirebaseDatabase.instance.reference().push().key.substring(1, 6);
     List<dynamic> track_details = new List();
     final mT = Tracking('Order Placed', 'We have received your order', 'start',
@@ -847,8 +1026,8 @@ class _paymentState extends State<payment> {
         .collection('db')
         .document('tacadmin')
         .collection('items')
-        .document(
-            id).updateData(<String, dynamic>{'stock_level': FieldValue.increment(-1)});
+        .document(id)
+        .updateData(<String, dynamic>{'stock_level': FieldValue.increment(-1)});
 //    Firestore.instance.runTransaction((t) async {
 //      var doc = await t.get(itemRef);
 //      var newstock_level = doc.data['stock_level'] - 1;
@@ -888,7 +1067,7 @@ class _paymentState extends State<payment> {
         setState(() {
           _inAsyncCall = false;
         });
-        _showDialog(context, tracking_id);
+        _showDialog(context);
         StartTime();
       });
     });
@@ -915,7 +1094,7 @@ var _txtCustomSub = TextStyle(
 );
 
 /// Card Popup if success payment
-_showDialog(BuildContext ctx, tracking_id) {
+_showDialog(BuildContext ctx) {
   showDialog(
     context: ctx,
     barrierDismissible: false,
@@ -942,11 +1121,53 @@ _showDialog(BuildContext ctx, tracking_id) {
             child: Padding(
           padding: const EdgeInsets.only(top: 30.0, bottom: 40.0),
           child: Text(
-            "Your order has been received\nTracking ID: $tracking_id",
+            "Your order has been received.\nYou should get a mail shortly.",
             style: _txtCustomSub,
           ),
         )),
       ],
     ),
   );
+}
+
+class MyInAppBrowser extends InAppBrowser {
+  @override
+  Future onLoadStart(String url) async {
+//    print("\n\nStarted $url\n\n");
+  }
+
+  @override
+  Future onLoadStop(String url) async {
+//    print("\n\nStopped $url\n\n");
+  }
+
+  @override
+  void onLoadError(String url, int code, String message) {
+//    print("\n\nCan't load $url.. Error: $message\n\n");
+  }
+
+  @override
+  void onExit() {
+    print("\n\nBrowser closed!\n\n");
+  }
+}
+
+class MyChromeSafariBrowser extends ChromeSafariBrowser {
+  MyChromeSafariBrowser(browserFallback) : super(bFallback: browserFallback);
+
+  @override
+  void onOpened() {
+    print("ChromeSafari browser opened");
+  }
+
+  @override
+  void onLoaded() {
+    print("ChromeSafari browser loaded");
+  }
+
+  @override
+  void onClosed() {
+    browserFallback.close();
+    print("ChromeSafari browser closed");
+  }
 }

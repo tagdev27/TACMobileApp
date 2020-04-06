@@ -25,7 +25,7 @@ class _flashSaleState extends State<flashSale> {
   ///
   /// Get image data dummy from firebase server
   ///
-  var imageNetwork = NetworkImage("https://firebasestorage.googleapis.com/v0/b/taconlinegiftshop.appspot.com/o/Screenshot_20181005-213916.png?alt=media&token=fbcd391d-1d91-4f7e-8ab5-8ff69cdc9514");
+  var imageNetwork = NetworkImage("https://firebasestorage.googleapis.com/v0/b/taconlinegiftshop.appspot.com/o/logo-3.png?alt=media&token=92f27f22-efdb-4455-9628-8e9ac7ae99c6");
 
   ///
   /// check the condition is right or wrong for image loaded or no

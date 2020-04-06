@@ -438,7 +438,7 @@ class _orderState extends State<order> {
       dynamic pro = cart['product'];
       int quantity = cart['quantity'];
 
-      double pro_price = double.parse("${pro['price']}") * quantity;
+      double pro_price = double.parse("${pro['price']}");// * quantity;
       double price = pro_price / convertion_rate;
 
 //      print('data at index $index with id $id has price of $price');
@@ -537,6 +537,7 @@ class _orderState extends State<order> {
             Container(
               height: 20.0,
             ),
+            /**
             ListTile(
               title: Text(
                 "Subtotal",
@@ -601,11 +602,9 @@ class _orderState extends State<order> {
                     fontFamily: ""),
               ),
             ),
+             */
             Container(
               margin: EdgeInsets.only(top: 20.0),
-              child: Divider(
-                height: 1.0,
-              ),
             ),
             ListTile(
               title: Text(

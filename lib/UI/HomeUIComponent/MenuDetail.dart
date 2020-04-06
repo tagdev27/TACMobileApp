@@ -28,7 +28,7 @@ class _menuDetailState extends State<menuDetail> {
   ///
   /// Get image data dummy from firebase server
   ///
-  var imageNetwork = NetworkImage("https://firebasestorage.googleapis.com/v0/b/beauty-look.appspot.com/o/a.jpg?alt=media&token=e36bbee2-4bfb-4a94-bd53-4055d29358e2");
+  var imageNetwork = NetworkImage("https://firebasestorage.googleapis.com/v0/b/taconlinegiftshop.appspot.com/o/logo-3.png?alt=media&token=92f27f22-efdb-4455-9628-8e9ac7ae99c6");
 
   static List<Products> products = new List();
   static List<Products> new_products = new List();

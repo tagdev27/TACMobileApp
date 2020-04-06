@@ -75,7 +75,7 @@ class _MenuState extends State<Menu> with TickerProviderStateMixin {
   List<Products> productsLimited = new List();
   List<Products> salesProductsWithSchedule = new List();
   List<Category> subCategories = new List();
-  
+
   List<MainCategory> menus = new List();
 
   StorageSystem ss = new StorageSystem();
@@ -99,13 +99,18 @@ class _MenuState extends State<Menu> with TickerProviderStateMixin {
     getMainCategories();
     startOperations();
   }
-  
+
   Future<void> getMainCategories() async {
-    var query = await Firestore.instance.collection('db').document('tacadmin').collection('main-categories').where('deleted', isEqualTo: false).getDocuments();
-    query.documents.forEach((snapshot){
+    var query = await Firestore.instance
+        .collection('db')
+        .document('tacadmin')
+        .collection('main-categories')
+        .where('deleted', isEqualTo: false)
+        .getDocuments();
+    query.documents.forEach((snapshot) {
       Map<String, dynamic> mn = snapshot.data;
       MainCategory mc = MainCategory(mn['id'], mn['name'], mn['image']);
-      if(!mounted) return;
+      if (!mounted) return;
       setState(() {
         menus.add(mc);
       });
@@ -113,16 +118,21 @@ class _MenuState extends State<Menu> with TickerProviderStateMixin {
   }
 
   Future<void> getBanners() async {
-    var query = await Firestore.instance.collection('db').document('tacadmin').collection('settings').document('banners').get();
-    if(!mounted) return;
+    var query = await Firestore.instance
+        .collection('db')
+        .document('tacadmin')
+        .collection('settings')
+        .document('banners')
+        .get();
+    if (!mounted) return;
     setState(() {
       banners = query.data;
     });
   }
 
-  String getMenuIcon(String name){
+  String getMenuIcon(String name) {
     String nm = name.toLowerCase();
-    if(nm == 'anniversary'){
+    if (nm == 'anniversary') {
       return 'assets/icon/camera.png';
     }
     return 'assets/icon/camera.png';
@@ -131,7 +141,7 @@ class _MenuState extends State<Menu> with TickerProviderStateMixin {
   Future<void> startOperations() async {
     //get list of products
     final pro = await new Utils().getProducts();
-    if(mounted){
+    if (mounted) {
       setState(() {
         products = pro;
         //if(pr)
@@ -141,20 +151,20 @@ class _MenuState extends State<Menu> with TickerProviderStateMixin {
       });
     }
     final cat = await new Utils().getCategories();
-    if(mounted){
+    if (mounted) {
       setState(() {
         subCategories = cat;
       });
     }
 
     String res = ss.getItem('currency');
-    if(res == ''){
+    if (res == '') {
       new Utils().getUserIpDetails();
     }
     res = ss.getItem('currency');
     //print('res = $res');
     Map<String, dynamic> data = jsonDecode(res);
-    if(mounted){
+    if (mounted) {
       setState(() {
         country = data['country'];
       });
@@ -233,14 +243,13 @@ class _MenuState extends State<Menu> with TickerProviderStateMixin {
     //onStartStopPress();
   }
 
-
-
   @override
   Widget build(BuildContext context) {
     if (!isStarted) {
       products.forEach((p) {
         String schedule = p.scheduled_sales_period;
-        if (schedule != '-' && p.sale) {//
+        if (schedule != '-' && p.sale) {
+          //
           salesProductsWithSchedule.add(p);
         }
       });
@@ -255,23 +264,26 @@ class _MenuState extends State<Menu> with TickerProviderStateMixin {
     var _onClickMenuIcon = (String id, String name, String image) {
 //      Navigator.push(context, PageRouteBuilder(
 //          pageBuilder: (_, __, ___) => new menuDetail(products, id, name, image)));
-      Navigator.push(context, PageRouteBuilder(
-          pageBuilder: (_, __, ___) => new menuDetail(products, id, name, image),
-          transitionDuration: Duration(milliseconds: 750),
+      Navigator.push(
+          context,
+          PageRouteBuilder(
+              pageBuilder: (_, __, ___) =>
+                  new menuDetail(products, id, name, image),
+              transitionDuration: Duration(milliseconds: 750),
 
-          /// Set animation with opacity
-          transitionsBuilder:
-              (_, Animation<double> animation, __, Widget child) {
-            return Opacity(
-              opacity: animation.value,
-              child: child,
-            );
-          }));
+              /// Set animation with opacity
+              transitionsBuilder:
+                  (_, Animation<double> animation, __, Widget child) {
+                return Opacity(
+                  opacity: animation.value,
+                  child: child,
+                );
+              }));
     };
 
     var onClickMenuIcon = () {
       Navigator.of(context).push(PageRouteBuilder(
-          pageBuilder: (_, __, ___) => new menuDetail(products, '', '',''),
+          pageBuilder: (_, __, ___) => new menuDetail(products, '', '', ''),
           transitionDuration: Duration(milliseconds: 750),
 
           /// Set animation with opacity
@@ -286,16 +298,18 @@ class _MenuState extends State<Menu> with TickerProviderStateMixin {
 
     /// Navigation to promoDetail.dart if user Click icon in Week Promotion
     var onClickWeekPromotion = () {
-      Navigator.push(context, PageRouteBuilder(
-          pageBuilder: (_, __, ___) => new promoDetail(products),
-          transitionDuration: Duration(milliseconds: 750),
-          transitionsBuilder:
-              (_, Animation<double> animation, __, Widget child) {
-            return Opacity(
-              opacity: animation.value,
-              child: child,
-            );
-          }));
+      Navigator.push(
+          context,
+          PageRouteBuilder(
+              pageBuilder: (_, __, ___) => new promoDetail(products),
+              transitionDuration: Duration(milliseconds: 750),
+              transitionsBuilder:
+                  (_, Animation<double> animation, __, Widget child) {
+                return Opacity(
+                  opacity: animation.value,
+                  child: child,
+                );
+              }));
     };
 
     /// Navigation to categoryDetail.dart if user Click icon in Category
@@ -337,6 +351,92 @@ class _MenuState extends State<Menu> with TickerProviderStateMixin {
           NetworkImage("${banners['grid3_image']}"),
           NetworkImage("${banners['grid4_image']}"),
         ],
+        onImageTap: (index) {
+          if (index == 3) {
+            MainCategory mc = menus.singleWhere((m) {
+              return m.name.toLowerCase() == 'birthday';
+            });
+            Navigator.push(
+                context,
+                PageRouteBuilder(
+                    pageBuilder: (_, __, ___) =>
+                        new menuDetail(products, mc.id, mc.name, mc.icon),
+                    transitionDuration: Duration(milliseconds: 750),
+
+                    /// Set animation with opacity
+                    transitionsBuilder:
+                        (_, Animation<double> animation, __, Widget child) {
+                      return Opacity(
+                        opacity: animation.value,
+                        child: child,
+                      );
+                    }));
+            return;
+          }
+          if (index == 4) {
+            MainCategory mc = menus.singleWhere((m) {
+              return m.name.toLowerCase() == 'anniversary';
+            });
+            Navigator.push(
+                context,
+                PageRouteBuilder(
+                    pageBuilder: (_, __, ___) =>
+                        new menuDetail(products, mc.id, mc.name, mc.icon),
+                    transitionDuration: Duration(milliseconds: 750),
+
+                    /// Set animation with opacity
+                    transitionsBuilder:
+                        (_, Animation<double> animation, __, Widget child) {
+                      return Opacity(
+                        opacity: animation.value,
+                        child: child,
+                      );
+                    }));
+            return;
+          }
+          if (index == 5) {
+            MainCategory mc = menus.singleWhere((m) {
+              return m.name.toLowerCase() == 'corporate';
+            });
+            Navigator.push(
+                context,
+                PageRouteBuilder(
+                    pageBuilder: (_, __, ___) =>
+                        new menuDetail(products, mc.id, mc.name, mc.icon),
+                    transitionDuration: Duration(milliseconds: 750),
+
+                    /// Set animation with opacity
+                    transitionsBuilder:
+                        (_, Animation<double> animation, __, Widget child) {
+                      return Opacity(
+                        opacity: animation.value,
+                        child: child,
+                      );
+                    }));
+            return;
+          }
+          if (index == 6) {
+            MainCategory mc = menus.singleWhere((m) {
+              return m.name.toLowerCase() == 'specials';
+            });
+            Navigator.push(
+                context,
+                PageRouteBuilder(
+                    pageBuilder: (_, __, ___) =>
+                        new menuDetail(products, mc.id, mc.name, mc.icon),
+                    transitionDuration: Duration(milliseconds: 750),
+
+                    /// Set animation with opacity
+                    transitionsBuilder:
+                        (_, Animation<double> animation, __, Widget child) {
+                      return Opacity(
+                        opacity: animation.value,
+                        child: child,
+                      );
+                    }));
+            return;
+          }
+        },
       ),
     );
 
@@ -350,39 +450,52 @@ class _MenuState extends State<Menu> with TickerProviderStateMixin {
       int number_of_rows = (menus.length ~/ 4) + (menus.length % 4);
       int len = menus.length;
 
-      for(int i = 0; i < number_of_rows; i++){
-        for(int j = 0; j < 4; j++) {
+      for (int i = 0; i < number_of_rows; i++) {
+        for (int j = 0; j < 4; j++) {
           bool check1 = isNotStackOverFlowError(j, 4);
           bool check2 = isNotStackOverFlowError(j, 4);
           bool check3 = isNotStackOverFlowError(j, 4);
           bool check4 = isNotStackOverFlowError(j, 4);
 
-          addMenus.add(Padding(padding: EdgeInsets.only(top: 23.0)),);
-          addMenus.add(CategoryIconValue(
-            icon1: (check1) ? menus[(j + i)].icon : null,
-            tap1: (check1) ? () {
-              _onClickMenuIcon(menus[(j + i)].id, menus[(j + i)].name,'');
-            } : null,
-            title1: (check1) ? menus[(j + i)].name : null,
-
-            icon2: (check2) ? menus[(1 + i)].icon : null,
-            tap2: (check2) ? () {
-              _onClickMenuIcon(menus[(1 + i)].id, menus[(1 + i)].name,'');
-            } : null,
-            title2: (check2) ? menus[(1 + i)].name : null,
-
-            icon3: (check3) ? menus[(2 + i)].icon : null,
-            tap3: (check3) ? () {
-              _onClickMenuIcon(menus[(2 + i)].id, menus[(2 + i)].name,'');
-            } : null,
-            title3: (check3) ? menus[(2 + i)].name : null,
-
-            icon4: (check4) ? menus[(3 + i)].icon : null,
-            tap4: (check4) ? () {
-              _onClickMenuIcon(menus[(3 + i)].id, menus[(3 + i)].name,'');
-            } : null,
-            title4: (check4) ? menus[(3 + i)].name : null,
-          ),);
+          addMenus.add(
+            Padding(padding: EdgeInsets.only(top: 23.0)),
+          );
+          addMenus.add(
+            CategoryIconValue(
+              icon1: (check1) ? menus[(j + i)].icon : null,
+              tap1: (check1)
+                  ? () {
+                      _onClickMenuIcon(
+                          menus[(j + i)].id, menus[(j + i)].name, '');
+                    }
+                  : null,
+              title1: (check1) ? menus[(j + i)].name : null,
+              icon2: (check2) ? menus[(1 + i)].icon : null,
+              tap2: (check2)
+                  ? () {
+                      _onClickMenuIcon(
+                          menus[(1 + i)].id, menus[(1 + i)].name, '');
+                    }
+                  : null,
+              title2: (check2) ? menus[(1 + i)].name : null,
+              icon3: (check3) ? menus[(2 + i)].icon : null,
+              tap3: (check3)
+                  ? () {
+                      _onClickMenuIcon(
+                          menus[(2 + i)].id, menus[(2 + i)].name, '');
+                    }
+                  : null,
+              title3: (check3) ? menus[(2 + i)].name : null,
+              icon4: (check4) ? menus[(3 + i)].icon : null,
+              tap4: (check4)
+                  ? () {
+                      _onClickMenuIcon(
+                          menus[(3 + i)].id, menus[(3 + i)].name, '');
+                    }
+                  : null,
+              title4: (check4) ? menus[(3 + i)].name : null,
+            ),
+          );
         }
       }
       return Container(
@@ -422,15 +535,18 @@ class _MenuState extends State<Menu> with TickerProviderStateMixin {
                 ),
                 Padding(
                     padding: const EdgeInsets.only(left: 0.0, top: 0.0),
-                    child: FlatButton(onPressed: () {
-                      Navigator.push(context, PageRouteBuilder(
-                          pageBuilder: (_, __, ___) =>
-                          new MoreMenu(products, menus)));
-                    }, child: Text(
-                      "See More",
-                      style: _customTextStyleBlue,
-                    ))
-                ),
+                    child: FlatButton(
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              PageRouteBuilder(
+                                  pageBuilder: (_, __, ___) =>
+                                      new MoreMenu(products, menus)));
+                        },
+                        child: Text(
+                          "See More",
+                          style: _customTextStyleBlue,
+                        ))),
               ],
             ),
             Padding(padding: EdgeInsets.only(top: 0.0)),
@@ -495,7 +611,7 @@ class _MenuState extends State<Menu> with TickerProviderStateMixin {
 //            title4: getMainCategoryByIndex(7).name,
 //            id4: getMainCategoryByIndex(7).id,
 //          ),
-            Padding(padding: EdgeInsets.only(top: 23.0)),
+            Padding(padding: EdgeInsets.only(top: 0.0)),
             CategoryIconValue(
               products: products,
               id1: (menus[0] != null) ? menus[0].id : '',
@@ -542,26 +658,26 @@ class _MenuState extends State<Menu> with TickerProviderStateMixin {
     // ListView a WeekPromotion Component dynamic data
     List<Widget> getPromoHorizontalList() {
       List<Widget> best_selling = new List();
-        if (products.length > 5) {
-          for (int i = 0; i < 5; i++) {
-            Products p = products[i];
-            best_selling.add(Padding(padding: EdgeInsets.only(left: 20.0)));
-            best_selling.add(
-              InkWell(
-                  onTap: onClickWeekPromotion,
-                  child: Image.network(
-                    p.pictures[0],
-                    height: 392.0,
-                  )),
-            );
-          }
+      if (products.length > 5) {
+        for (int i = 0; i < 5; i++) {
+          Products p = products[i];
+          best_selling.add(Padding(padding: EdgeInsets.only(left: 20.0)));
+          best_selling.add(
+            InkWell(
+                onTap: onClickWeekPromotion,
+                child: Image.network(
+                  p.pictures[0],
+                  height: 392.0,
+                )),
+          );
         }
+      }
 
 //      products.sublist(0,3).forEach((p){
 //
 //      });
 
-        return best_selling;
+      return best_selling;
     }
 
     /// ListView a WeekPromotion Component
@@ -582,13 +698,13 @@ class _MenuState extends State<Menu> with TickerProviderStateMixin {
                     fontWeight: FontWeight.w700),
               )),
           Expanded(
-            child: ListView(
-              shrinkWrap: true,
-              padding: EdgeInsets.only(top: 10.0),
-              scrollDirection: Axis.horizontal,
-              children: getPromoHorizontalList(),
-            ) //: _loadingImageAnimationForBestSelling(context),
-          ),
+              child: ListView(
+            shrinkWrap: true,
+            padding: EdgeInsets.only(top: 10.0),
+            scrollDirection: Axis.horizontal,
+            children: getPromoHorizontalList(),
+          ) //: _loadingImageAnimationForBestSelling(context),
+              ),
         ],
       ),
     );
@@ -676,17 +792,15 @@ class _MenuState extends State<Menu> with TickerProviderStateMixin {
         String price = new GeneralUtils().currencyFormattedMoney(pro.price);
         String salePrice =
             new GeneralUtils().currencyFormattedMoney(pro.salePrice);
-        flash_sell.add(flashSaleItem(
-          banners['parallax_banner_image'],
-          price: salePrice,
-          saleP: price,
-          flashItem: pro,
-          place: country,
-          stock: "${pro.stock} Available",
-          colorLine: (pro.stock <= 10) ? 0xFFFFA500 : 0xFF52B640,
-          widthLine: (pro.stock <= 10) ? 50.0 : 100.0,
-          salesList: salesProductsWithSchedule
-        ));
+        flash_sell.add(flashSaleItem(banners['parallax_banner_image'],
+            price: salePrice,
+            saleP: price,
+            flashItem: pro,
+            place: country,
+            stock: "", //"""${pro.stock} Available",
+            colorLine: (pro.stock <= 10) ? 0xFFFFA500 : 0xFF52B640,
+            widthLine: (pro.stock <= 10) ? 50.0 : 100.0,
+            salesList: salesProductsWithSchedule));
         flash_sell.add(
           Padding(padding: EdgeInsets.only(left: 10.0)),
         );
@@ -727,9 +841,15 @@ class _MenuState extends State<Menu> with TickerProviderStateMixin {
               Padding(padding: EdgeInsets.only(top: 15.0)),
               CategoryItemValue(
                 products: products,
-                image: (index < 2) ? subCategories[index].image : subCategories[index * 5].image,
-                title: (index < 2) ? subCategories[index].name : subCategories[index * 5].name,
-                id: (index < 2) ? subCategories[index].id : subCategories[index * 5].id,
+                image: (index < 2)
+                    ? subCategories[index].image
+                    : subCategories[index * 5].image,
+                title: (index < 2)
+                    ? subCategories[index].name
+                    : subCategories[index * 5].name,
+                id: (index < 2)
+                    ? subCategories[index].id
+                    : subCategories[index * 5].id,
 //                tap: (){
 //                  onClickCategory(subCategories[index].id);
 //                },
@@ -741,14 +861,13 @@ class _MenuState extends State<Menu> with TickerProviderStateMixin {
                   : Text(''),
               ((index + 2) < subCategories.length)
                   ? CategoryItemValue(
-                products: products,
+                      products: products,
                       image: subCategories[index + 2].image,
                       title: subCategories[index + 2].name, //0 1 2 3 4 5 6
 //                      tap: (){
 //                        onClickCategory(subCategories[index + 2].id);
 //                      },
-                      id: subCategories[index + 2].id
-                    )
+                      id: subCategories[index + 2].id)
                   : Text(''),
             ],
           ),
@@ -781,20 +900,27 @@ class _MenuState extends State<Menu> with TickerProviderStateMixin {
               ),
               Padding(
                   padding: const EdgeInsets.only(left: 0.0, top: 0.0),
-                  child: FlatButton(onPressed: (){
-                    Navigator.push(context, PageRouteBuilder(
-                        pageBuilder: (_, __, ___) => new MoreCategory(products, 'All', sub_cat: subCategories, menus_id: null)));
-                  }, child: Text(
-                    "See More",
-                    style: _customTextStyleBlue,
-                  ))
-              ),
+                  child: FlatButton(
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            PageRouteBuilder(
+                                pageBuilder: (_, __, ___) => new MoreCategory(
+                                    products, 'All',
+                                    sub_cat: subCategories, menus_id: null)));
+                      },
+                      child: Text(
+                        "See More",
+                        style: _customTextStyleBlue,
+                      ))),
             ],
           ),
           Expanded(
             child: ListView(
               scrollDirection: Axis.horizontal,
-              children: (subCategories.length > 5) ? getcategoryImageBottoms(0, 0) : [],
+              children: (subCategories.length > 5)
+                  ? getcategoryImageBottoms(0, 0)
+                  : [],
             ),
           )
         ],
@@ -822,31 +948,40 @@ class _MenuState extends State<Menu> with TickerProviderStateMixin {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(left: 0.0, top: 0.0),
-                  child: FlatButton(onPressed: (){
-                    Navigator.push(context, PageRouteBuilder(
-                        pageBuilder: (_, __, ___) => new promoDetail(products)));
-                  }, child: Text(
-                    "See More",
-                    style: _customTextStyleBlue,
-                  ))
-                ),
+                    padding: const EdgeInsets.only(left: 0.0, top: 0.0),
+                    child: FlatButton(
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              PageRouteBuilder(
+                                  pageBuilder: (_, __, ___) =>
+                                      new promoDetail(products)));
+                        },
+                        child: Text(
+                          "See More",
+                          style: _customTextStyleBlue,
+                        ))),
               ],
             ),
 
             /// To set GridView item
-      (products.length > 0) ? GridView.count(
-              shrinkWrap: true,
-              padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 20.0),
-              crossAxisSpacing: 10.0,
-              mainAxisSpacing: 17.0,
-              childAspectRatio: 0.545,
-              crossAxisCount: 2,
-              primary: false,
-              children: products
-                  .map((pro) => ItemGrid(products, pro, getProductPrice(pro)))
-                  .toList(),
-            ) : _loadingImageAnimation(context) //products.map((pro) => ItemGrid(pro))
+            (products.length > 0)
+                ? GridView.count(
+                    shrinkWrap: true,
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 10.0, vertical: 20.0),
+                    crossAxisSpacing: 10.0,
+                    mainAxisSpacing: 17.0,
+                    childAspectRatio: 0.545,
+                    crossAxisCount: 2,
+                    primary: false,
+                    children: products
+                        .map((pro) =>
+                            ItemGrid(products, pro, getProductPrice(pro)))
+                        .toList(),
+                  )
+                : _loadingImageAnimation(
+                    context) //products.map((pro) => ItemGrid(pro))
           ],
         ),
       ),
@@ -917,18 +1052,21 @@ class ItemGrid extends StatelessWidget {
     MediaQueryData mediaQueryData = MediaQuery.of(context);
     return InkWell(
       onTap: () {
-        Navigator.push(context, PageRouteBuilder(
-            pageBuilder: (_, __, ___) => new detailProduk(all_products, gridItem),
-            transitionDuration: Duration(milliseconds: 900),
+        Navigator.push(
+            context,
+            PageRouteBuilder(
+                pageBuilder: (_, __, ___) =>
+                    new detailProduk(all_products, gridItem),
+                transitionDuration: Duration(milliseconds: 900),
 
-            /// Set animation Opacity in route to detailProduk layout
-            transitionsBuilder:
-                (_, Animation<double> animation, __, Widget child) {
-              return Opacity(
-                opacity: animation.value,
-                child: child,
-              );
-            }));
+                /// Set animation Opacity in route to detailProduk layout
+                transitionsBuilder:
+                    (_, Animation<double> animation, __, Widget child) {
+                  return Opacity(
+                    opacity: animation.value,
+                    child: child,
+                  );
+                }));
       },
       child: Container(
         decoration: BoxDecoration(
@@ -955,31 +1093,34 @@ class ItemGrid extends StatelessWidget {
                   child: Material(
                     child: InkWell(
                       onTap: () {
-                        Navigator.push(context, PageRouteBuilder(
-                            opaque: false,
-                            pageBuilder: (BuildContext context, _, __) {
-                              return new Material(
-                                color: Colors.black54,
-                                child: Container(
-                                  padding: EdgeInsets.all(30.0),
-                                  child: InkWell(
-                                    child: Hero(
-                                        tag: "hero-grid-${gridItem.id}",
-                                        child: Image.network(
-                                          gridItem.pictures[0],
-                                          width: 300.0,
-                                          height: 300.0,
-                                          alignment: Alignment.center,
-                                          fit: BoxFit.contain,
-                                        )),
-                                    onTap: () {
-                                      Navigator.pop(context);
-                                    },
-                                  ),
-                                ),
-                              );
-                            },
-                            transitionDuration: Duration(milliseconds: 500)));
+                        Navigator.push(
+                            context,
+                            PageRouteBuilder(
+                                opaque: false,
+                                pageBuilder: (BuildContext context, _, __) {
+                                  return new Material(
+                                    color: Colors.black54,
+                                    child: Container(
+                                      padding: EdgeInsets.all(30.0),
+                                      child: InkWell(
+                                        child: Hero(
+                                            tag: "hero-grid-${gridItem.id}",
+                                            child: Image.network(
+                                              gridItem.pictures[0],
+                                              width: 300.0,
+                                              height: 300.0,
+                                              alignment: Alignment.center,
+                                              fit: BoxFit.contain,
+                                            )),
+                                        onTap: () {
+                                          Navigator.pop(context);
+                                        },
+                                      ),
+                                    ),
+                                  );
+                                },
+                                transitionDuration:
+                                    Duration(milliseconds: 500)));
                       },
                       child: Container(
                         height: mediaQueryData.size.height / 3.3,
@@ -1045,7 +1186,7 @@ class ItemGrid extends StatelessWidget {
                         ],
                       ),
                       Text(
-                        '',//'${gridItem.stock} in stock',
+                        '', //'${gridItem.stock} in stock',
                         style: TextStyle(
                             fontFamily: "Sans",
                             color: Colors.black26,
@@ -1077,15 +1218,15 @@ class flashSaleItem extends StatelessWidget {
 
   final Products flashItem;
 
-  flashSaleItem(
-      this.banner_head,
+  flashSaleItem(this.banner_head,
       {this.price,
       this.saleP,
       this.flashItem,
       this.place,
       this.stock,
       this.colorLine,
-      this.widthLine, this.salesList});
+      this.widthLine,
+      this.salesList});
 
   @override
   Widget build(BuildContext context) {
@@ -1097,16 +1238,22 @@ class flashSaleItem extends StatelessWidget {
           children: <Widget>[
             InkWell(
               onTap: () {
-                Navigator.push(context, PageRouteBuilder(
-                    pageBuilder: (_, __, ___) => new flashSale(place, banner_head, salesProductsWithSchedule: salesList,),
-                    transitionsBuilder:
-                        (_, Animation<double> animation, __, Widget child) {
-                      return Opacity(
-                        opacity: animation.value,
-                        child: child,
-                      );
-                    },
-                    transitionDuration: Duration(milliseconds: 850)));
+                Navigator.push(
+                    context,
+                    PageRouteBuilder(
+                        pageBuilder: (_, __, ___) => new flashSale(
+                              place,
+                              banner_head,
+                              salesProductsWithSchedule: salesList,
+                            ),
+                        transitionsBuilder:
+                            (_, Animation<double> animation, __, Widget child) {
+                          return Opacity(
+                            opacity: animation.value,
+                            child: child,
+                          );
+                        },
+                        transitionDuration: Duration(milliseconds: 850)));
               },
               child: Container(
                 height: 305.0,
@@ -1253,7 +1400,7 @@ class loadingItemGrid extends StatelessWidget {
   final color = Colors.black38;
   Widget build(BuildContext context) {
     MediaQueryData mediaQueryData = MediaQuery.of(context);
-    return  Row(
+    return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
         Column(
@@ -1293,7 +1440,8 @@ class loadingItemGrid extends StatelessWidget {
                         width: mediaQueryData.size.width / 4.1,
                         color: Colors.black12,
                       ),
-                    ),   Padding(
+                    ),
+                    Padding(
                       padding: EdgeInsets.only(left: 10.0, top: 10.0),
                       child: Container(
                         height: 8.0,
@@ -1343,7 +1491,7 @@ class loadingItemGrid extends StatelessWidget {
                             color: Colors.black38,
                           ),
                           Padding(
-                            padding: const EdgeInsets.only(left:5.0),
+                            padding: const EdgeInsets.only(left: 5.0),
                             child: Container(
                               height: 6.0,
                               width: mediaQueryData.size.width / 5.5,
@@ -1353,17 +1501,16 @@ class loadingItemGrid extends StatelessWidget {
                         ],
                       ),
                     ),
-
                     Padding(
                       padding: const EdgeInsets.only(
                           top: 24.0, left: 10.0, bottom: 15.0),
                       child: Container(
                         height: 7.0,
-                        width: mediaQueryData.size.width/2.5,
+                        width: mediaQueryData.size.width / 2.5,
                         decoration: BoxDecoration(
                             color: Colors.black12,
                             borderRadius:
-                            BorderRadius.all(Radius.circular(4.0)),
+                                BorderRadius.all(Radius.circular(4.0)),
                             shape: BoxShape.rectangle),
                       ),
                     )
@@ -1378,7 +1525,7 @@ class loadingItemGrid extends StatelessWidget {
   }
 }
 
-Widget _loadingImageAnimation(BuildContext context){
+Widget _loadingImageAnimation(BuildContext context) {
   MediaQueryData mediaQueryData = MediaQuery.of(context);
   return GridView.count(
     crossAxisCount: 2,
@@ -1390,12 +1537,12 @@ Widget _loadingImageAnimation(BuildContext context){
     children: List.generate(
       /// Get data in flashSaleItem.dart (ListItem folder)
       flashData.length,
-          (index) => loadingItemGrid(flashData[index]),
+      (index) => loadingItemGrid(flashData[index]),
     ),
   );
 }
 
-Widget _loadingImageAnimationForBestSelling(BuildContext context){
+Widget _loadingImageAnimationForBestSelling(BuildContext context) {
   MediaQueryData mediaQueryData = MediaQuery.of(context);
   return ListView(
     scrollDirection: Axis.horizontal,
@@ -1408,7 +1555,7 @@ Widget _loadingImageAnimationForBestSelling(BuildContext context){
     children: List.generate(
       /// Get data in flashSaleItem.dart (ListItem folder)
       flashData.length,
-          (index) => loadingItemGrid(flashData[index]),
+      (index) => loadingItemGrid(flashData[index]),
     ),
   );
 }
@@ -1419,28 +1566,25 @@ class CategoryItemValue extends StatelessWidget {
   String image, title, id;
   GestureTapCallback tap;
 
-  CategoryItemValue({
-    this.products,
-    this.image,
-    this.title,
-    this.tap,
-    this.id
-  });
+  CategoryItemValue({this.products, this.image, this.title, this.tap, this.id});
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: (){
-        Navigator.push(context, PageRouteBuilder(
-            pageBuilder: (_, __, ___) => new categoryDetail(products, id, title, image),
-            transitionDuration: Duration(milliseconds: 750),
-            transitionsBuilder:
-                (_, Animation<double> animation, __, Widget child) {
-              return Opacity(
-                opacity: animation.value,
-                child: child,
-              );
-            }));
+      onTap: () {
+        Navigator.push(
+            context,
+            PageRouteBuilder(
+                pageBuilder: (_, __, ___) =>
+                    new categoryDetail(products, id, title, image),
+                transitionDuration: Duration(milliseconds: 750),
+                transitionsBuilder:
+                    (_, Animation<double> animation, __, Widget child) {
+                  return Opacity(
+                    opacity: animation.value,
+                    child: child,
+                  );
+                }));
       },
       child: Container(
         height: 105.0,
@@ -1476,12 +1620,23 @@ class CategoryItemValue extends StatelessWidget {
 class CategoryIconValue extends StatelessWidget {
   List<Products> products;
 
-  String icon1, icon2, icon3, icon4, title1, title2, title3, title4, id1, id2, id3, id4;
+  String icon1,
+      icon2,
+      icon3,
+      icon4,
+      title1,
+      title2,
+      title3,
+      title4,
+      id1,
+      id2,
+      id3,
+      id4;
   GestureTapCallback tap1, tap2, tap3, tap4;
 
   CategoryIconValue(
       {this.products,
-        this.icon1,
+      this.icon1,
       this.tap1,
       this.icon2,
       this.tap2,
@@ -1496,8 +1651,7 @@ class CategoryIconValue extends StatelessWidget {
       this.id1,
       this.id2,
       this.id3,
-      this.id4
-      });
+      this.id4});
 
   @override
   Widget build(BuildContext context) {
@@ -1506,28 +1660,31 @@ class CategoryIconValue extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: <Widget>[
         InkWell(
-          onTap: (){
-            if(id1.isEmpty){
+          onTap: () {
+            if (id1.isEmpty) {
               return;
             }
-              Navigator.push(context, PageRouteBuilder(
-                  pageBuilder: (_, __, ___) => new menuDetail(products, id1, title1, icon1),
-                  transitionDuration: Duration(milliseconds: 750),
+            Navigator.push(
+                context,
+                PageRouteBuilder(
+                    pageBuilder: (_, __, ___) =>
+                        new menuDetail(products, id1, title1, icon1),
+                    transitionDuration: Duration(milliseconds: 750),
 
-                  /// Set animation with opacity
-                  transitionsBuilder:
-                      (_, Animation<double> animation, __, Widget child) {
-                    return Opacity(
-                      opacity: animation.value,
-                      child: child,
-                    );
-                  }));
+                    /// Set animation with opacity
+                    transitionsBuilder:
+                        (_, Animation<double> animation, __, Widget child) {
+                      return Opacity(
+                        opacity: animation.value,
+                        child: child,
+                      );
+                    }));
           },
           child: Column(
             children: <Widget>[
               Image.network(
                 icon1,
-                height: 48.2,
+                height: 100.2,
               ),
               Padding(padding: EdgeInsets.only(top: 7.0)),
               Text(
@@ -1542,28 +1699,31 @@ class CategoryIconValue extends StatelessWidget {
           ),
         ),
         InkWell(
-          onTap: (){
-            if(id2.isEmpty){
+          onTap: () {
+            if (id2.isEmpty) {
               return;
             }
-            Navigator.push(context, PageRouteBuilder(
-                pageBuilder: (_, __, ___) => new menuDetail(products, id2, title2, icon2),
-                transitionDuration: Duration(milliseconds: 750),
+            Navigator.push(
+                context,
+                PageRouteBuilder(
+                    pageBuilder: (_, __, ___) =>
+                        new menuDetail(products, id2, title2, icon2),
+                    transitionDuration: Duration(milliseconds: 750),
 
-                /// Set animation with opacity
-                transitionsBuilder:
-                    (_, Animation<double> animation, __, Widget child) {
-                  return Opacity(
-                    opacity: animation.value,
-                    child: child,
-                  );
-                }));
+                    /// Set animation with opacity
+                    transitionsBuilder:
+                        (_, Animation<double> animation, __, Widget child) {
+                      return Opacity(
+                        opacity: animation.value,
+                        child: child,
+                      );
+                    }));
           },
           child: Column(
             children: <Widget>[
               Image.network(
                 icon2,
-                height: 48.2,
+                height: 100.2,
               ),
               Padding(padding: EdgeInsets.only(top: 7.0)),
               Text(
@@ -1578,28 +1738,31 @@ class CategoryIconValue extends StatelessWidget {
           ),
         ),
         InkWell(
-          onTap: (){
-            if(id3.isEmpty){
+          onTap: () {
+            if (id3.isEmpty) {
               return;
             }
-            Navigator.push(context, PageRouteBuilder(
-                pageBuilder: (_, __, ___) => new menuDetail(products, id3, title3, icon3),
-                transitionDuration: Duration(milliseconds: 750),
+            Navigator.push(
+                context,
+                PageRouteBuilder(
+                    pageBuilder: (_, __, ___) =>
+                        new menuDetail(products, id3, title3, icon3),
+                    transitionDuration: Duration(milliseconds: 750),
 
-                /// Set animation with opacity
-                transitionsBuilder:
-                    (_, Animation<double> animation, __, Widget child) {
-                  return Opacity(
-                    opacity: animation.value,
-                    child: child,
-                  );
-                }));
+                    /// Set animation with opacity
+                    transitionsBuilder:
+                        (_, Animation<double> animation, __, Widget child) {
+                      return Opacity(
+                        opacity: animation.value,
+                        child: child,
+                      );
+                    }));
           },
           child: Column(
             children: <Widget>[
               Image.network(
                 icon3,
-                height: 48.2,
+                height: 100.2,
               ),
               Padding(padding: EdgeInsets.only(top: 7.0)),
               Text(
@@ -1614,28 +1777,31 @@ class CategoryIconValue extends StatelessWidget {
           ),
         ),
         InkWell(
-          onTap: (){
-            if(id4.isEmpty){
+          onTap: () {
+            if (id4.isEmpty) {
               return;
             }
-            Navigator.push(context, PageRouteBuilder(
-                pageBuilder: (_, __, ___) => new menuDetail(products, id4, title4, icon4),
-                transitionDuration: Duration(milliseconds: 750),
+            Navigator.push(
+                context,
+                PageRouteBuilder(
+                    pageBuilder: (_, __, ___) =>
+                        new menuDetail(products, id4, title4, icon4),
+                    transitionDuration: Duration(milliseconds: 750),
 
-                /// Set animation with opacity
-                transitionsBuilder:
-                    (_, Animation<double> animation, __, Widget child) {
-                  return Opacity(
-                    opacity: animation.value,
-                    child: child,
-                  );
-                }));
+                    /// Set animation with opacity
+                    transitionsBuilder:
+                        (_, Animation<double> animation, __, Widget child) {
+                      return Opacity(
+                        opacity: animation.value,
+                        child: child,
+                      );
+                    }));
           },
           child: Column(
             children: <Widget>[
               Image.network(
                 icon4,
-                height: 48.2,
+                height: 100.2,
               ),
               Padding(padding: EdgeInsets.only(top: 7.0)),
               Text(

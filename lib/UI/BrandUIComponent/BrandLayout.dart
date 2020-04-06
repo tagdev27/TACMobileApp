@@ -603,7 +603,7 @@ class _brandState extends State<brand> {
             style: _fontCostumSheetBotom,
           ),
           trailing: FlatButton(onPressed: (){
-            print('index at $i and map is ${mp[i]}');
+            //print('index at $i and map is ${mp[i]}');
             if(mp[i] == true){
               setState(() {
                 userSelectedGoogleEvents.remove(se);
@@ -832,7 +832,7 @@ class _brandState extends State<brand> {
                               padding: EdgeInsets.only(left: 10.0, right: 0.0),
                               child: Container(
                                   width:
-                                      MediaQuery.of(context).size.width / 2.8,
+                                      MediaQuery.of(context).size.width / 3.1,
                                   height: 60.0,
                                   alignment: AlignmentDirectional.center,
                                   decoration: BoxDecoration(
